@@ -25,7 +25,8 @@ Dự án thiết kế và triển khai quy trình **Ingestion → Storage** cho 
 │   └── benchmark/
 │       └── run_benchmarks.py            # [Thành viên 4] Chạy 4 kịch bản thực nghiệm & vẽ biểu đồ đánh giá
 ├── data/
-│   └── sample_transactions.csv          # Dữ liệu giao dịch mẫu phục vụ kiểm thử nhanh
+│   ├── sample_transactions.csv          # File mẫu đính kèm trên GitHub (10 dòng minh họa schema)
+│   └── paysim_full.csv                  # [Tải từ Kaggle - ~493MB, 6.3M dòng] (Được gitignore vì >100MB)
 └── docs/
     ├── charts/                          # Biểu đồ kết quả thực nghiệm (.png)
     └── screenshots/                     # Ảnh chụp giao diện Kafka UI, MinIO Console, Terminal
@@ -33,7 +34,29 @@ Dự án thiết kế và triển khai quy trình **Ingestion → Storage** cho 
 
 ---
 
-## 2. Hướng dẫn Cài đặt & Chạy Demo Từng Bước (Khả năng tái lập - Mục 5.8)
+## 2. Nguồn Dữ liệu Lớn (Big Data Dataset) & Lưu ý quan trọng
+
+Do GitHub giới hạn dung lượng mỗi file tối đa **100 MB**, trên repository chỉ đính kèm sẵn file mẫu `data/sample_transactions.csv` (theo đúng hướng dẫn tại **Mục 7** của đề cương: *"nộp đường dẫn nguồn dữ liệu, dữ liệu mẫu hoặc script sinh dữ liệu; không bắt buộc nộp toàn bộ dữ liệu lớn"*).
+
+Khi chạy thực nghiệm Big Data để lấy số liệu báo cáo, nhóm sử dụng **1 trong 2 nguồn dữ liệu lớn** sau:
+
+1. **Cách A – Dùng bộ dữ liệu thực tế PaySim từ Kaggle (6.362.620 giao dịch, ~493 MB):**
+   - **Link tải chính thức:** [https://www.kaggle.com/datasets/ealaxi/paysim1](https://www.kaggle.com/datasets/ealaxi/paysim1)
+   - Sau khi tải về, giải nén và đổi tên file CSV thành `data/paysim_full.csv` (file này đã được cấu hình trong `.gitignore` để không bị lỗi khi `git push`).
+   - Chạy Producer phát trực tiếp từ file thật:
+     ```powershell
+     python -m src.producer.transaction_producer --csv data/paysim_full.csv --count 500000 --rate 5000
+     ```
+
+2. **Cách B – Dùng Script tự sinh hàng trăm nghìn / hàng triệu giao dịch (Không cần tải CSV 500MB):**
+   - Nếu không truyền tham số `--csv`, `transaction_producer.py` sẽ tự động sinh luồng giao dịch lớn theo đúng phân phối của PaySim:
+     ```powershell
+     python -m src.producer.transaction_producer --count 200000 --rate 5000
+     ```
+
+---
+
+## 3. Hướng dẫn Cài đặt & Chạy Demo Từng Bước (Khả năng tái lập - Mục 5.8)
 
 ### Bước 1: Khởi động hạ tầng Docker (Kafka + Kafka UI + MinIO)
 ```powershell

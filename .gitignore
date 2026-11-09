@@ -8,6 +8,8 @@ env/
 
 # Benchmark temp & local volumes
 data/benchmark_tmp/
+data/*.csv
+!data/sample_transactions.csv
 *.log
 
 # IDE / OS
