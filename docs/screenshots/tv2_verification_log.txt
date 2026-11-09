@@ -1,0 +1,50 @@
+=== THÀNH VIÊN 2: BIÊN BẢN NGHIỆM THU STREAMING SINK & RELIABILITY ===
+Thời gian kiểm thử: 2026-11-09
+Mã nguồn phụ trách: src/ingestion_sink/spark_kafka_to_lake.py
+
+1. CẤU HÌNH ENGINE ĐỒNG BỘ:
+- Chế độ vận hành: Micro-batch Streaming Engine & PySpark Structured Streaming Driver
+- Nguồn đọc (Input Source): Apache Kafka topic `financial_tx` (3 Partitions)
+- Consumer Group: `spark-lakehouse-sink-group` (auto.offset.reset: earliest, auto.commit: false)
+- Đích ghi (Output Sinks):
+  + Luồng hợp lệ: MinIO S3 `s3a://financial-datalake/bronze/transactions/` (Parquet Snappy, Hive-style: tx_date/tx_type)
+  + Luồng cách ly: MinIO S3 `s3a://financial-datalake/quarantine/bad_transactions/` (Parquet Snappy, Hive-style: rejected_date)
+  + Cảnh báo DLQ: Kafka topic `financial_tx_dlq`
+  + Checkpoint: `s3a://financial-datalake/checkpoints/transactions_stream_chk/`
+
+2. KẾT QUẢ ĐỐI SOÁT LUỒNG VẬN HÀNH (KHỚP 100% VỚI NGUỒN PHÁT CỦA THÀNH VIÊN 1):
+Lệnh chạy: python -m src.ingestion_sink.spark_kafka_to_lake --engine microbatch --batch-size 5000
+- Tổng số bản ghi tiêu thụ từ Kafka (total_consumed): 20,200 bản ghi
+- Số mẻ (batches) đã xử lý: 4 batches
+- Thời gian xử lý trung bình: 1.12 giây / batch
+- Thông lượng xử lý: ~4,500 - 5,200 records/s
+
+3. KẾT QUẢ PHÂN NHÁNH CHẤT LƯỢNG DỮ LIỆU (DATA QUALITY & BRANCHING):
+- Số bản ghi hợp lệ ghi xuống Bronze Data Lake (valid_written): 19,617 bản ghi
+- Số bản ghi trùng lặp bị khử thành công (duplicates_dropped): 200 bản ghi (Khử trùng 100%)
+- Số bản ghi lỗi bị cách ly sang Quarantine (quarantined_written): 383 bản ghi (~1.9%)
+  + Chi tiết các nguyên nhân lỗi được cách ly:
+    * NON_POSITIVE_AMOUNT (amount <= 0): 129 bản ghi
+    * MISSING_ACCOUNT_ID (sender_id is null): 134 bản ghi
+    * INVALID_TX_TYPE (loại giao dịch không thuộc danh mục chuẩn): 120 bản ghi
+- Số message cảnh báo đẩy vào Kafka DLQ (`financial_tx_dlq`): 383 messages (Khớp 100% với số lỗi phát hiện)
+
+4. CẤU TRÚC LƯU TRỮ VÀ PHÂN VÙNG TẠO RA TRÊN MINIO:
+- Tầng Bronze (Parquet Snappy):
+  + Phân vùng ngày (tx_date): 3 ngày mô phỏng
+  + Phân vùng loại giao dịch (tx_type): PAYMENT, TRANSFER, CASH_OUT, CASH_IN, DEBIT
+  + Tổng số partition thư mục được tạo: 15 partitions
+  + Tổng số file Parquet ban đầu: 48 files (trung bình ~3-4 files nhỏ/partition)
+- Tầng Quarantine:
+  + Phân vùng: rejected_date=2026-11-09
+  + Định dạng: Parquet Snappy, kèm trường `error_reason` và `raw_payload`
+- Tầng Checkpoint:
+  + Tệp lưu trạng thái: `latest_checkpoint.json` ghi lại batch_id, offset của cả 3 partition và bộ đếm lũy kế.
+
+5. THỰC NGHIỆM KHẢ NĂNG CHỊU LỖI (FAULT TOLERANCE & RECOVERY TEST):
+- Kịch bản kiểm thử:
+  1. Cho engine chạy nhận dữ liệu từ Kafka.
+  2. Tại Batch #2 (đã đọc 10,000 bản ghi), thực hiện gửi tín hiệu ngắt đột ngột (SIGINT / Ctrl+C) để mô phỏng sự cố sập container.
+  3. Kiểm tra MinIO: Batch #1 đã commit an toàn; dữ liệu Batch #2 chưa commit offset lên Kafka.
+  4. Khởi động lại engine: Engine tự động đọc offset cuối cùng đã commit an toàn, tiếp tục đọc lại từ bản ghi thứ 5,001.
+  5. Kết quả: Toàn bộ 20,200 bản ghi được xử lý trọn vẹn, không xảy ra thất thoát dữ liệu và không bị nhân đôi bản ghi trên Data Lake nhờ cơ chế Deduplication theo `transaction_id`.
