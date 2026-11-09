@@ -98,24 +98,47 @@ def inject_fault(record: dict) -> dict:
 
 
 def load_csv_records(csv_path: Path):
-    """Đọc bản ghi từ file CSV mẫu hoặc file PaySim gốc."""
+    """
+    Đọc bản ghi trực tiếp từ bộ dữ liệu Kaggle PaySim gốc
+    (Cột gốc: step,type,amount,nameOrig,oldbalanceOrg,newbalanceOrig,nameDest,oldbalanceDest,newbalanceDest,isFraud,isFlaggedFraud)
+    hoặc file CSV mẫu.
+    Trong PaySim, 1 step = 1 giờ thực tế (từ step 1 đến 744 tương đương 31 ngày).
+    """
+    base_sim_time = datetime(2026, 11, 1, 0, 0, 0, tzinfo=timezone.utc)
+    channels = ["MOBILE_APP", "WEB", "POS", "ATM"]
+
     with csv_path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for idx, row in enumerate(reader, start=1):
+            step_val = int(row.get("step", 1))
+            # Chuyển đổi cột `step` (mỗi step = 1 giờ) của Kaggle PaySim thành thời gian thực tế
+            sim_dt = base_sim_time + timedelta(hours=step_val - 1, seconds=idx % 3600)
+            event_time_str = row.get("event_time") or (
+                sim_dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            )
+            tx_date_compact = event_time_str[:10].replace("-", "")
+
             yield {
-                "transaction_id": row.get("transaction_id") or f"CSV-TXN-{idx:08d}",
-                "event_time": row.get("event_time")
-                or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-                "step": int(row.get("step", 1)),
+                "transaction_id": row.get("transaction_id")
+                or f"PAYSIM-{tx_date_compact}-{idx:08d}",
+                "event_time": event_time_str,
+                "step": step_val,
                 "tx_type": row.get("type") or row.get("tx_type", "PAYMENT"),
                 "amount": float(row.get("amount", 0.0)),
                 "currency": row.get("currency", "VND"),
                 "sender_id": row.get("nameOrig") or row.get("sender_id"),
-                "sender_old_balance": float(row.get("oldbalanceOrg") or row.get("sender_old_balance", 0.0)),
-                "sender_new_balance": float(row.get("newbalanceOrig") or row.get("sender_new_balance", 0.0)),
+                "sender_old_balance": float(
+                    row.get("oldbalanceOrg") or row.get("sender_old_balance", 0.0)
+                ),
+                "sender_new_balance": float(
+                    row.get("newbalanceOrig") or row.get("sender_new_balance", 0.0)
+                ),
                 "receiver_id": row.get("nameDest") or row.get("receiver_id"),
-                "payment_channel": row.get("payment_channel", "MOBILE_APP"),
-                "is_fraud_label": int(row.get("isFraud") or row.get("is_fraud_label", 0)),
+                "payment_channel": row.get("payment_channel")
+                or channels[idx % len(channels)],
+                "is_fraud_label": int(
+                    row.get("isFraud") or row.get("is_fraud_label", 0)
+                ),
             }
 
 
