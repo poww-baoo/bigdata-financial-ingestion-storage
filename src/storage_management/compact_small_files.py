@@ -1,106 +1,117 @@
-"""
-===============================================================================
-THÀNH VIÊN 3: GIẢI QUYẾT BÀI TOÁN SMALL FILES PROBLEM (PARQUET COMPACTION)
-===============================================================================
-Chức năng:
-Khi hệ thống Streaming chạy liên tục theo micro-batch (ví dụ 10 giây/lần), mỗi
-partition `tx_date=.../tx_type=...` sẽ sinh ra nhiều file Parquet nhỏ, làm giảm
-tốc độ đọc của Spark/DuckDB.
-Script này thực hiện gộp (Compaction / Optimize) các file Parquet nhỏ trong cùng
-một Partition thành một file Parquet lớn tối ưu duy nhất.
-
-Cách chạy:
-    python -m src.storage_management.compact_small_files
-"""
-
+"""Gộp Parquet theo partition. Mặc định chỉ xem kế hoạch; dừng writer/reader khi apply."""
+import argparse
 import io
+import json
+import tempfile
 import uuid
 from collections import defaultdict
 
 import pyarrow as pa
 import pyarrow.parquet as pq
-from minio import Minio
 
-from src.config import (
-    LAKE_BRONZE_PATH,
-    MINIO_ACCESS_KEY,
-    MINIO_BUCKET_NAME,
-    MINIO_ENDPOINT,
-    MINIO_SECRET_KEY,
-)
+from src.config import LAKE_BRONZE_PATH, MINIO_BUCKET_NAME
+from src.storage_management.init_minio_buckets import get_minio_client
 
 
-def compact_partitions() -> dict:
-    client = Minio(
-        MINIO_ENDPOINT,
-        access_key=MINIO_ACCESS_KEY,
-        secret_key=MINIO_SECRET_KEY,
-        secure=False,
-    )
+def read_object(client, key):
+    response = client.get_object(MINIO_BUCKET_NAME, key)
+    try:
+        return response.read()
+    finally:
+        response.close()
+        response.release_conn()
 
-    partition_files = defaultdict(list)
-    for obj in client.list_objects(MINIO_BUCKET_NAME, prefix=LAKE_BRONZE_PATH, recursive=True):
-        if obj.object_name.endswith(".parquet"):
-            partition_prefix = "/".join(obj.object_name.split("/")[:-1])
-            partition_files[partition_prefix].append(obj.object_name)
 
-    report = {
-        "partitions_scanned": len(partition_files),
-        "partitions_compacted": 0,
-        "files_before": sum(len(v) for v in partition_files.values()),
-        "files_after": 0,
-    }
-
-    print(
-        f"[COMPACTION] Quét {report['partitions_scanned']} phân vùng "
-        f"(Tổng số file trước khi gộp: {report['files_before']})"
-    )
-
-    for part_prefix, object_keys in sorted(partition_files.items()):
-        if len(object_keys) <= 1:
-            report["files_after"] += len(object_keys)
-            continue
-
-        tables = []
-        for key in object_keys:
-            resp = client.get_object(MINIO_BUCKET_NAME, key)
-            try:
-                data = io.BytesIO(resp.read())
-                tables.append(pq.read_table(data))
-            finally:
-                resp.close()
-                resp.release_conn()
-
-        merged_table = pa.concat_tables(tables, promote_options="default")
-        out_buf = io.BytesIO()
-        pq.write_table(merged_table, out_buf, compression="snappy")
-        out_buf.seek(0)
-
-        compacted_key = f"{part_prefix}/compacted-{uuid.uuid4().hex[:10]}.snappy.parquet"
-        client.put_object(
-            bucket_name=MINIO_BUCKET_NAME,
-            object_name=compacted_key,
-            data=out_buf,
-            length=out_buf.getbuffer().nbytes,
-            content_type="application/octet-stream",
-        )
-
-        # Xóa các file nhỏ cũ sau khi đã ghi thành công file gộp
-        for old_key in object_keys:
-            client.remove_object(MINIO_BUCKET_NAME, old_key)
-
-        report["partitions_compacted"] += 1
-        report["files_after"] += 1
-        print(
-            f"  + Đã gộp [{part_prefix}]: {len(object_keys)} file nhỏ -> 1 file chuẩn "
-            f"({merged_table.num_rows:,} bản ghi)"
-        )
-
-    print(
-        f"[COMPACTION] Hoàn tất! Số lượng file giảm từ {report['files_before']} -> {report['files_after']}"
-    )
+def compact_partitions(apply=False, writers_stopped=False, target_mb=128, client=None):
+    if target_mb <= 0:
+        raise ValueError("target_mb phải > 0")
+    if apply and not writers_stopped:
+        raise ValueError("Dừng ingestion và reader, rồi truyền --writers-stopped trước khi --apply")
+    client = client or get_minio_client()
+    # Journal ngoài Bronze: DuckDB không quét nhầm file tạm.
+    journal_prefix = "maintenance/compaction/"
+    pending = list(client.list_objects(MINIO_BUCKET_NAME, prefix=journal_prefix, recursive=True))
+    if pending:
+        raise RuntimeError("Có journal compaction chưa hoàn tất. Khôi phục theo tài liệu TV3 trước khi chạy lại.")
+    partitions = defaultdict(list)
+    for obj in client.list_objects(MINIO_BUCKET_NAME, prefix=LAKE_BRONZE_PATH.rstrip('/') + '/', recursive=True):
+        if obj.object_name.endswith('.parquet'):
+            partitions[obj.object_name.rsplit('/', 1)[0]].append(obj)
+    report = {"partitions_scanned": len(partitions), "partitions_compacted": 0,
+              "files_before": sum(map(len, partitions.values())), "files_after": sum(map(len, partitions.values())),
+              "groups_planned": 0, "rows_rewritten": 0, "applied": apply}
+    target = target_mb * 1024 * 1024
+    for partition, objects in sorted(partitions.items()):
+        # Chỉ gom các file nhỏ, giới hạn tổng byte nén mỗi nhóm.
+        groups, group, size = [], [], 0
+        for obj in sorted(objects, key=lambda obj: obj.object_name):
+            if obj.size >= target:
+                continue
+            if group and size + obj.size > target:
+                groups.append(group)
+                group, size = [], 0
+            group.append(obj)
+            size += obj.size
+        if group:
+            groups.append(group)
+        changed = False
+        for group in groups:
+            if len(group) < 2:
+                continue
+            report['groups_planned'] += 1
+            print(f"[COMPACTION] {partition}: {len(group)} file -> 1; apply={apply}")
+            if not apply:
+                continue
+            run_id = uuid.uuid4().hex
+            destination = f"{partition}/compacted-{run_id}.snappy.parquet"
+            journal_key = f"{journal_prefix}{run_id}.json"
+            journal = {"sources": [obj.object_name for obj in group], "destination": destination}
+            rows = 0
+            # Đọc từng file, ghi từng batch; không giữ cả partition trong RAM.
+            with tempfile.TemporaryFile() as output:
+                writer = None
+                try:
+                    for obj in group:
+                        parquet = pq.ParquetFile(io.BytesIO(read_object(client, obj.object_name)))
+                        if writer is None:
+                            schema = parquet.schema_arrow.remove_metadata()
+                            writer = pq.ParquetWriter(output, schema, compression='snappy')
+                        elif not parquet.schema_arrow.equals(schema, check_metadata=False):
+                            raise ValueError(f"Schema không đồng nhất: {obj.object_name}")
+                        for batch in parquet.iter_batches(batch_size=65536):
+                            writer.write_table(pa.Table.from_batches([batch], schema=schema))
+                            rows += batch.num_rows
+                finally:
+                    if writer:
+                        writer.close()
+                output.seek(0)
+                if pq.ParquetFile(output).metadata.num_rows != rows:
+                    raise RuntimeError("Số bản ghi file gộp không khớp")
+                journal['rows'] = rows
+                payload = json.dumps(journal).encode()
+                client.put_object(MINIO_BUCKET_NAME, journal_key, io.BytesIO(payload), len(payload))
+                length = output.seek(0, 2)
+                output.seek(0)
+                client.put_object(MINIO_BUCKET_NAME, destination, output, length)
+            # Xác minh file đọc lại trước khi xóa bất kỳ nguồn nào.
+            uploaded = pq.ParquetFile(io.BytesIO(read_object(client, destination)))
+            if uploaded.metadata.num_rows != rows or not uploaded.schema_arrow.equals(schema, check_metadata=False):
+                raise RuntimeError("File upload không hợp lệ; giữ nguồn và journal để phục hồi")
+            for obj in group:
+                client.remove_object(MINIO_BUCKET_NAME, obj.object_name)
+            client.remove_object(MINIO_BUCKET_NAME, journal_key)
+            report['files_after'] -= len(group) - 1
+            report['rows_rewritten'] += rows
+            changed = True
+        if changed:
+            report['partitions_compacted'] += 1
+    print(json.dumps(report, indent=2))
     return report
 
 
-if __name__ == "__main__":
-    compact_partitions()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--apply', action='store_true')
+    parser.add_argument('--writers-stopped', action='store_true')
+    parser.add_argument('--target-mb', type=int, default=128)
+    compact_partitions(**vars(parser.parse_args()))

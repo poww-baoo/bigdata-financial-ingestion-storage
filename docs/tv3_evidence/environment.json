@@ -1,0 +1,20 @@
+{
+  "os": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+  "python": "3.14.4",
+  "minio_version": "minio version RELEASE.2025-09-07T16-13-09Z (commit-id=07c3a429bfed433e49018cb0f78a52145d4bedeb)",
+  "minio_binary_sha256": "7c5bd8512c6e966455b1d198209358b2d191c77a83ab377c4073281065fb855f",
+  "minio_binary_source": "Extracted usr/bin/minio from Docker Hub elestio/minio:latest (2026-11-10); no Docker daemon used",
+  "minio_binary_source_layer": "sha256:468bab5a2c7a423c92fbaddb6db43aebff910b72d0ca71ac8cb746c48dd9d1fc",
+  "runtime_mode": "native Linux process, loopback API 9000 and Console 9001, one local drive",
+  "dependencies": {
+    "duckdb": "2.0.0",
+    "pyarrow": "26.0.1",
+    "minio": "7.2.20",
+    "pandas": "3.1.1",
+    "python-dotenv": "1.2.4",
+    "confluent-kafka": "2.16.1",
+    "playwright": "1.65.0"
+  },
+  "fixture": "1000 synthetic records derived from data/sample_transactions.csv; six rejected records",
+  "limitations": "Storage integration only; not Kafka end-to-end, cluster fault tolerance, or scale benchmark"
+}

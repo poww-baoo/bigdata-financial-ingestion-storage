@@ -1,0 +1,5 @@
+[SCREENSHOT] tv3_minio_bucket_after.png: http://127.0.0.1:9001/browser/financial-datalake
+[SCREENSHOT] tv3_minio_dates_after.png: http://127.0.0.1:9001/browser/financial-datalake/bronze%2Ftransactions%2F
+[SCREENSHOT] tv3_minio_types_after.png: http://127.0.0.1:9001/browser/financial-datalake/bronze%2Ftransactions%2Ftx_date%3D2026-11-09%2F
+[SCREENSHOT] tv3_minio_after_compaction.png: http://127.0.0.1:9001/browser/financial-datalake/bronze%2Ftransactions%2Ftx_date%3D2026-11-09%2Ftx_type%3DTRANSFER%2F
+[SCREENSHOT] tv3_minio_quarantine_after.png: http://127.0.0.1:9001/browser/financial-datalake/quarantine%2Fbad_transactions%2Frejected_date%3D2026-11-10%2F

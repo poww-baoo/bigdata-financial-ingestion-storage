@@ -88,12 +88,16 @@ python -m src.ingestion_sink.spark_kafka_to_lake --engine microbatch --batch-siz
 # 1. Xem thống kê các Partition và số file Parquet trên MinIO
 python -m src.storage_management.init_minio_buckets
 
-# 2. Gộp các file Parquet nhỏ trong từng Partition (Compaction)
+# 2. Xem kế hoạch gộp file nhỏ (chưa thay đổi dữ liệu)
 python -m src.storage_management.compact_small_files
 
 # 3. Truy vấn SQL trực tiếp trên MinIO bằng DuckDB để đối soát dữ liệu
 python -m src.storage_management.query_verification
 ```
+
+Chi tiết phần người 3, cách áp dụng compaction khi đã dừng ingestion/reader và giải thích các khái niệm: [Tài liệu thành viên 3](docs/tv3_report_contribution.md).
+
+Phần Storage đã được kiểm chứng trên MinIO thật: **1.000 giao dịch, 45 → 9 file, dữ liệu và tổng tiền giữ nguyên, 6 bản ghi cách ly**. Xem [kết quả kiểm chứng](docs/tv3_evidence/result.json), [dữ liệu bàn giao](docs/tv3_evidence/after/) và ảnh [trước](docs/screenshots/tv3_minio_before_compaction.png)/[sau gộp](docs/screenshots/tv3_minio_after_compaction.png).
 
 ### Bước 6: Chạy Thực nghiệm Benchmark & Xuất Biểu đồ Báo cáo (Thành viên 4)
 ```powershell

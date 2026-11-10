@@ -1,0 +1,150 @@
+[COMPACTION] bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT: 5 file -> 1; apply=False
+[COMPACTION] bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT: 5 file -> 1; apply=False
+[COMPACTION] bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT: 5 file -> 1; apply=False
+[COMPACTION] bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER: 5 file -> 1; apply=False
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN: 5 file -> 1; apply=False
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT: 5 file -> 1; apply=False
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT: 5 file -> 1; apply=False
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT: 5 file -> 1; apply=False
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER: 5 file -> 1; apply=False
+{
+  "partitions_scanned": 9,
+  "partitions_compacted": 0,
+  "files_before": 45,
+  "files_after": 45,
+  "groups_planned": 9,
+  "rows_rewritten": 0,
+  "applied": false
+}
+[COMPACTION] bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT: 5 file -> 1; apply=True
+[COMPACTION] bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT: 5 file -> 1; apply=True
+[COMPACTION] bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT: 5 file -> 1; apply=True
+[COMPACTION] bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER: 5 file -> 1; apply=True
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN: 5 file -> 1; apply=True
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT: 5 file -> 1; apply=True
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT: 5 file -> 1; apply=True
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT: 5 file -> 1; apply=True
+[COMPACTION] bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER: 5 file -> 1; apply=True
+{
+  "partitions_scanned": 9,
+  "partitions_compacted": 9,
+  "files_before": 45,
+  "files_after": 9,
+  "groups_planned": 9,
+  "rows_rewritten": 1000,
+  "applied": true
+}
+
+[schema]
+       column_name column_type null  key default extra
+    transaction_id     VARCHAR  YES None    None  None
+        event_time     VARCHAR  YES None    None  None
+              step      BIGINT  YES None    None  None
+            amount      DOUBLE  YES None    None  None
+          currency     VARCHAR  YES None    None  None
+         sender_id     VARCHAR  YES None    None  None
+sender_old_balance      DOUBLE  YES None    None  None
+sender_new_balance      DOUBLE  YES None    None  None
+       receiver_id     VARCHAR  YES None    None  None
+   payment_channel     VARCHAR  YES None    None  None
+    is_fraud_label      BIGINT  YES None    None  None
+       ingested_at     VARCHAR  YES None    None  None
+   kafka_partition      BIGINT  YES None    None  None
+      kafka_offset      BIGINT  YES None    None  None
+           tx_date        DATE  YES None    None  None
+           tx_type     VARCHAR  YES None    None  None
+
+[totals]
+ total_records  unique_transactions  duplicate_records  invalid_records
+          1000                 1000                  0                0
+
+[by_partition]
+   tx_date  tx_type currency  total_transactions  total_amount
+2026-11-07 CASH_OUT      USD                  10         800.0
+2026-11-07 CASH_OUT      VND                  90   180000000.0
+2026-11-07  PAYMENT      USD                  10         224.0
+2026-11-07  PAYMENT      VND                  90    50400000.0
+2026-11-08  PAYMENT      USD                  10          50.0
+2026-11-08  PAYMENT      VND                  90    11250000.0
+2026-11-08 TRANSFER      USD                  10       18000.0
+2026-11-08 TRANSFER      VND                  90  4050000000.0
+2026-11-09  CASH_IN      USD                  10        1280.0
+2026-11-09  CASH_IN      VND                  90   288000000.0
+2026-11-09 CASH_OUT      USD                  10       19400.0
+2026-11-09 CASH_OUT      VND                  90  4365000000.0
+2026-11-09    DEBIT      USD                  10         356.0
+2026-11-09    DEBIT      VND                  90    80100000.0
+2026-11-09  PAYMENT      USD                  10         100.0
+2026-11-09  PAYMENT      VND                  90    22500000.0
+2026-11-09 TRANSFER      USD                  20        9360.0
+2026-11-09 TRANSFER      VND                 180  2106000000.0
+
+[by_channel]
+   tx_date payment_channel currency  total_transactions  total_amount
+2026-11-07             ATM      USD                  10         800.0
+2026-11-07             ATM      VND                  90   180000000.0
+2026-11-07             WEB      USD                  10         224.0
+2026-11-07             WEB      VND                  90    50400000.0
+2026-11-08      MOBILE_APP      USD                  20       18050.0
+2026-11-08      MOBILE_APP      VND                 180  4061250000.0
+2026-11-09             ATM      USD                  10       19400.0
+2026-11-09             ATM      VND                  90  4365000000.0
+2026-11-09      MOBILE_APP      USD                  20        3460.0
+2026-11-09      MOBILE_APP      VND                 180   778500000.0
+2026-11-09             POS      USD                  20        1636.0
+2026-11-09             POS      VND                 180   368100000.0
+2026-11-09             WEB      USD                  10        6000.0
+2026-11-09             WEB      VND                  90  1350000000.0
+
+[sample]
+transaction_id               event_time  step     amount currency  sender_id  sender_old_balance  sender_new_balance receiver_id payment_channel  is_fraud_label               ingested_at  kafka_partition  kafka_offset    tx_date  tx_type
+    TV3-000-00 2026-11-09T08:00:01.120Z     1       10.0      USD C100000001           5000000.0           4750000.0  M200000001      MOBILE_APP               0 2026-11-10T00:00:00+00:00                0             0 2026-11-09  PAYMENT
+    TV3-000-01 2026-11-09T08:00:02.450Z     1      600.0      USD C100000002          20000000.0           5000000.0  C200000002             WEB               0 2026-11-10T00:00:00+00:00                1             1 2026-11-09 TRANSFER
+    TV3-000-02 2026-11-09T08:00:05.810Z     1     1940.0      USD C100000003          48500000.0                 0.0  C200000003             ATM               1 2026-11-10T00:00:00+00:00                2             2 2026-11-09 CASH_OUT
+    TV3-000-03 2026-11-09T08:01:10.005Z     1      128.0      USD C100000004           1200000.0           4400000.0  M200000004             POS               0 2026-11-10T00:00:00+00:00                0             3 2026-11-09  CASH_IN
+    TV3-000-04 2026-11-09T08:02:15.330Z     1       35.6      USD C100000005           9000000.0           8110000.0  M200000005             POS               0 2026-11-10T00:00:00+00:00                1             4 2026-11-09    DEBIT
+    TV3-000-05 2026-11-08T14:15:22.100Z     1        5.0      USD C100000006           2500000.0           2375000.0  M200000006      MOBILE_APP               0 2026-11-10T00:00:00+00:00                2             5 2026-11-08  PAYMENT
+    TV3-000-06 2026-11-08T19:40:11.900Z     1     1800.0      USD C100000007          45000000.0                 0.0  C200000007      MOBILE_APP               1 2026-11-10T00:00:00+00:00                0             6 2026-11-08 TRANSFER
+    TV3-000-07 2026-11-07T10:12:44.500Z     1       80.0      USD C100000008          10500000.0           8500000.0  C200000008             ATM               0 2026-11-10T00:00:00+00:00                1             7 2026-11-07 CASH_OUT
+    TV3-000-08 2026-11-07T16:55:09.210Z     1       22.4      USD C100000009           3100000.0           2540000.0  M200000009             WEB               0 2026-11-10T00:00:00+00:00                2             8 2026-11-07  PAYMENT
+    TV3-000-09 2026-11-09T09:30:00.000Z     1      336.0      USD C100000010          12000000.0           3600000.0  C200000010      MOBILE_APP               0 2026-11-10T00:00:00+00:00                0             9 2026-11-09 TRANSFER
+    TV3-001-00 2026-11-09T08:00:01.120Z     1   250000.0      VND C100000001           5000000.0           4750000.0  M200000001      MOBILE_APP               0 2026-11-10T00:00:00+00:00                0            10 2026-11-09  PAYMENT
+    TV3-001-01 2026-11-09T08:00:02.450Z     1 15000000.0      VND C100000002          20000000.0           5000000.0  C200000002             WEB               0 2026-11-10T00:00:00+00:00                1            11 2026-11-09 TRANSFER
+    TV3-001-02 2026-11-09T08:00:05.810Z     1 48500000.0      VND C100000003          48500000.0                 0.0  C200000003             ATM               1 2026-11-10T00:00:00+00:00                2            12 2026-11-09 CASH_OUT
+    TV3-001-03 2026-11-09T08:01:10.005Z     1  3200000.0      VND C100000004           1200000.0           4400000.0  M200000004             POS               0 2026-11-10T00:00:00+00:00                0            13 2026-11-09  CASH_IN
+    TV3-001-04 2026-11-09T08:02:15.330Z     1   890000.0      VND C100000005           9000000.0           8110000.0  M200000005             POS               0 2026-11-10T00:00:00+00:00                1            14 2026-11-09    DEBIT
+    TV3-001-05 2026-11-08T14:15:22.100Z     1   125000.0      VND C100000006           2500000.0           2375000.0  M200000006      MOBILE_APP               0 2026-11-10T00:00:00+00:00                2            15 2026-11-08  PAYMENT
+    TV3-001-06 2026-11-08T19:40:11.900Z     1 45000000.0      VND C100000007          45000000.0                 0.0  C200000007      MOBILE_APP               1 2026-11-10T00:00:00+00:00                0            16 2026-11-08 TRANSFER
+    TV3-001-07 2026-11-07T10:12:44.500Z     1  2000000.0      VND C100000008          10500000.0           8500000.0  C200000008             ATM               0 2026-11-10T00:00:00+00:00                1            17 2026-11-07 CASH_OUT
+    TV3-001-08 2026-11-07T16:55:09.210Z     1   560000.0      VND C100000009           3100000.0           2540000.0  M200000009             WEB               0 2026-11-10T00:00:00+00:00                2            18 2026-11-07  PAYMENT
+    TV3-001-09 2026-11-09T09:30:00.000Z     1  8400000.0      VND C100000010          12000000.0           3600000.0  C200000010      MOBILE_APP               0 2026-11-10T00:00:00+00:00                0            19 2026-11-09 TRANSFER
+
+[quarantine]
+rejected_date             error_reason  rejected_records
+   2026-11-10 NON_POSITIVE_AMOUNT:-1.0                 6
+{
+  "partitions_scanned": 9,
+  "partitions_compacted": 0,
+  "files_before": 9,
+  "files_after": 9,
+  "groups_planned": 0,
+  "rows_rewritten": 0,
+  "applied": true
+}
+[STORAGE] Bucket 'financial-datalake' đã sẵn sàng tại http://localhost:9000
+
+=== THỐNG KÊ PHÂN VÙNG TRONG TẦNG BRONZE (PARQUET) ===
+  - Partition [tx_date=2026-11-07/tx_type=CASH_OUT]: 1 file Parquet (16.71 KB)
+  - Partition [tx_date=2026-11-07/tx_type=PAYMENT]: 1 file Parquet (16.71 KB)
+  - Partition [tx_date=2026-11-08/tx_type=PAYMENT]: 1 file Parquet (16.89 KB)
+  - Partition [tx_date=2026-11-08/tx_type=TRANSFER]: 1 file Parquet (16.89 KB)
+  - Partition [tx_date=2026-11-09/tx_type=CASH_IN]: 1 file Parquet (16.71 KB)
+  - Partition [tx_date=2026-11-09/tx_type=CASH_OUT]: 1 file Parquet (16.71 KB)
+  - Partition [tx_date=2026-11-09/tx_type=DEBIT]: 1 file Parquet (16.71 KB)
+  - Partition [tx_date=2026-11-09/tx_type=PAYMENT]: 1 file Parquet (16.89 KB)
+  - Partition [tx_date=2026-11-09/tx_type=TRANSFER]: 1 file Parquet (18.46 KB)
+
+=== THỐNG KÊ VÙNG CÁCH LY LỖI (QUARANTINE) ===
+  - Quarantine (quarantine/bad_transactions): 1 file (5.96 KB)
+  - Checkpoint (checkpoints/transactions_stream_chk): Lưu trạng thái Offset streaming
+[INTEGRATION PASS] Dữ liệu và tổng tiền giữ nguyên; compaction hoàn tất trên MinIO thật.

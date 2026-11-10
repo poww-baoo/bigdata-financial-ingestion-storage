@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "completed_at_utc": "2026-11-10T06:28:53.775158+00:00",
+  "endpoint": "localhost:9000",
+  "bucket": "financial-datalake",
+  "fixture": "1000 synthetic transactions derived from sample CSV; 6 rejected records; no Kafka required",
+  "rows_before": 1000,
+  "rows_after": 1000,
+  "files_before": 45,
+  "files_after": 9,
+  "full_rows_sha256_unchanged": true,
+  "aggregates_unchanged": true,
+  "quarantine_unchanged": true,
+  "dry_run_unchanged": true,
+  "second_apply_noop": true,
+  "anonymous_get_status": 403,
+  "dry_run": {
+    "partitions_scanned": 9,
+    "partitions_compacted": 0,
+    "files_before": 45,
+    "files_after": 45,
+    "groups_planned": 9,
+    "rows_rewritten": 0,
+    "applied": false
+  },
+  "compaction": {
+    "partitions_scanned": 9,
+    "partitions_compacted": 9,
+    "files_before": 45,
+    "files_after": 9,
+    "groups_planned": 9,
+    "rows_rewritten": 1000,
+    "applied": true
+  }
+}

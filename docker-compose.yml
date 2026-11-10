@@ -85,14 +85,18 @@ services:
   minio-init:
     image: elestio/minio:latest
     container_name: fin-minio-init
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin123}
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME:-financial-datalake}
     depends_on:
       minio:
         condition: service_healthy
     entrypoint: >
-      /bin/sh -c "
+      /bin/sh -ec "
       mc alias set local http://minio:9000 $${MINIO_ACCESS_KEY:-minioadmin} $${MINIO_SECRET_KEY:-minioadmin123};
       mc mb --ignore-existing local/$${MINIO_BUCKET_NAME:-financial-datalake};
-      mc anonymous set download local/$${MINIO_BUCKET_NAME:-financial-datalake};
+      mc anonymous set none local/$${MINIO_BUCKET_NAME:-financial-datalake};
       echo 'Bucket financial-datalake đã sẵn sàng!';
       "
 

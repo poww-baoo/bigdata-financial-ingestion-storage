@@ -1,0 +1,60 @@
+{
+  "row_count": 1000,
+  "rows_sha256": "5e788b587f1b0180956d11e254f17b929f54ad452125e641477575881adaf3ea",
+  "bronze_files": 9,
+  "bronze_bytes": 156312,
+  "partitions": [
+    "bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT",
+    "bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT",
+    "bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT",
+    "bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER"
+  ],
+  "compression": [
+    "SNAPPY"
+  ],
+  "quarantine_files": 1,
+  "quarantine_sha256": "fe4914339ed58419d91b9f585a112dadf1c5ddfbfb51705bcffe6385e431b16d",
+  "objects": [
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT/compacted-29f14261224547ef83634074affbd53d.snappy.parquet",
+      "bytes": 17106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT/compacted-519dfcd73dd84eee839c988fc42a9f8b.snappy.parquet",
+      "bytes": 17108
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT/compacted-9688d2d401dc488dae3e086535a3fe4b.snappy.parquet",
+      "bytes": 17295
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER/compacted-eca1412c2139407abe09715b31c280d3.snappy.parquet",
+      "bytes": 17293
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN/compacted-95189c3d26454504b9f82d8579f4013c.snappy.parquet",
+      "bytes": 17107
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT/compacted-f67aaf7f94c442e182d8f24caaf7abb0.snappy.parquet",
+      "bytes": 17106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT/compacted-d293e0a90c314d0abf4d85632aca4d94.snappy.parquet",
+      "bytes": 17107
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT/compacted-a0675012f89b4d86845503b3348200a5.snappy.parquet",
+      "bytes": 17292
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER/compacted-ac00338f37d040a9904e47cd2f6c7669.snappy.parquet",
+      "bytes": 18898
+    }
+  ]
+}

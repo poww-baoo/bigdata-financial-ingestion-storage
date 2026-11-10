@@ -1,0 +1,124 @@
+test_compaction_preserves_data_and_is_idempotent (test_storage_management.StorageTests.test_compaction_preserves_data_and_is_idempotent) ... ok
+test_interruption_keeps_journal_and_blocks_retry (test_storage_management.StorageTests.test_interruption_keeps_journal_and_blocks_retry) ... ok
+test_requires_maintenance_window (test_storage_management.StorageTests.test_requires_maintenance_window) ... ok
+test_sql_export_and_failed_reconciliation (test_storage_management.StorageTests.test_sql_export_and_failed_reconciliation) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.221s
+
+OK
+[COMPACTION] bronze/transactions/tx_date=2026-11-10/tx_type=TRANSFER: 3 file -> 1; apply=False
+{
+  "partitions_scanned": 1,
+  "partitions_compacted": 0,
+  "files_before": 3,
+  "files_after": 3,
+  "groups_planned": 1,
+  "rows_rewritten": 0,
+  "applied": false
+}
+[COMPACTION] bronze/transactions/tx_date=2026-11-10/tx_type=TRANSFER: 3 file -> 1; apply=True
+{
+  "partitions_scanned": 1,
+  "partitions_compacted": 1,
+  "files_before": 3,
+  "files_after": 1,
+  "groups_planned": 1,
+  "rows_rewritten": 3,
+  "applied": true
+}
+{
+  "partitions_scanned": 1,
+  "partitions_compacted": 0,
+  "files_before": 1,
+  "files_after": 1,
+  "groups_planned": 0,
+  "rows_rewritten": 0,
+  "applied": true
+}
+[COMPACTION] bronze/transactions/tx_date=2026-11-10/tx_type=TRANSFER: 3 file -> 1; apply=True
+
+[schema]
+    column_name column_type null  key default extra
+ transaction_id     VARCHAR  YES None    None  None
+         amount      DOUBLE  YES None    None  None
+       currency     VARCHAR  YES None    None  None
+payment_channel     VARCHAR  YES None    None  None
+        tx_date        DATE  YES None    None  None
+        tx_type     VARCHAR  YES None    None  None
+
+[totals]
+ total_records  unique_transactions  duplicate_records  invalid_records
+             3                    3                  0                0
+
+[by_partition]
+   tx_date  tx_type currency  total_transactions  total_amount
+2026-11-10 TRANSFER      VND                   3           6.0
+
+[by_channel]
+   tx_date payment_channel currency  total_transactions  total_amount
+2026-11-10             WEB      VND                   3           6.0
+
+[sample]
+transaction_id  amount currency payment_channel    tx_date  tx_type
+           TX0     1.0      VND             WEB 2026-11-10 TRANSFER
+           TX1     2.0      VND             WEB 2026-11-10 TRANSFER
+           TX2     3.0      VND             WEB 2026-11-10 TRANSFER
+[quarantine] Không có dữ liệu cách ly để truy vấn.
+
+[schema]
+    column_name column_type null  key default extra
+ transaction_id     VARCHAR  YES None    None  None
+         amount      DOUBLE  YES None    None  None
+       currency     VARCHAR  YES None    None  None
+payment_channel     VARCHAR  YES None    None  None
+        tx_date        DATE  YES None    None  None
+        tx_type     VARCHAR  YES None    None  None
+
+[totals]
+ total_records  unique_transactions  duplicate_records  invalid_records
+             3                    3                  0                0
+
+[by_partition]
+   tx_date  tx_type currency  total_transactions  total_amount
+2026-11-10 TRANSFER      VND                   3           6.0
+
+[by_channel]
+   tx_date payment_channel currency  total_transactions  total_amount
+2026-11-10             WEB      VND                   3           6.0
+
+[sample]
+transaction_id  amount currency payment_channel    tx_date  tx_type
+           TX0     1.0      VND             WEB 2026-11-10 TRANSFER
+           TX1     2.0      VND             WEB 2026-11-10 TRANSFER
+           TX2     3.0      VND             WEB 2026-11-10 TRANSFER
+[quarantine] Không có dữ liệu cách ly để truy vấn.
+
+[schema]
+    column_name column_type null  key default extra
+ transaction_id     VARCHAR  YES None    None  None
+         amount      DOUBLE  YES None    None  None
+       currency     VARCHAR  YES None    None  None
+payment_channel     VARCHAR  YES None    None  None
+        tx_date        DATE  YES None    None  None
+        tx_type     VARCHAR  YES None    None  None
+
+[totals]
+ total_records  unique_transactions  duplicate_records  invalid_records
+             4                    3                  1                0
+
+[by_partition]
+   tx_date  tx_type currency  total_transactions  total_amount
+2026-11-10 TRANSFER      VND                   4           7.0
+
+[by_channel]
+   tx_date payment_channel currency  total_transactions  total_amount
+2026-11-10             WEB      VND                   4           7.0
+
+[sample]
+transaction_id  amount currency payment_channel    tx_date  tx_type
+           TX0     1.0      VND             WEB 2026-11-10 TRANSFER
+           TX0     1.0      VND             WEB 2026-11-10 TRANSFER
+           TX1     2.0      VND             WEB 2026-11-10 TRANSFER
+           TX2     3.0      VND             WEB 2026-11-10 TRANSFER
+[quarantine] Không có dữ liệu cách ly để truy vấn.

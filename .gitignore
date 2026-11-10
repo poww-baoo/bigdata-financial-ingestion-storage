@@ -23,3 +23,6 @@ agent.md
 .ignore
 graft/
 .claude/
+
+# Local storage integration runtime
+.local/

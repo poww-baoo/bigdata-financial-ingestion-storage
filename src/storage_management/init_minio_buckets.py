@@ -42,16 +42,19 @@ def inspect_datalake() -> dict:
     else:
         print(f"[STORAGE] Bucket '{MINIO_BUCKET_NAME}' đã sẵn sàng tại http://{MINIO_ENDPOINT}")
 
+    # Kho giao dịch chỉ được truy cập bằng tài khoản có quyền S3.
+    client.delete_bucket_policy(MINIO_BUCKET_NAME)
+
     partition_stats = defaultdict(lambda: {"files": 0, "bytes": 0})
     quarantine_stats = {"files": 0, "bytes": 0}
 
     for obj in client.list_objects(MINIO_BUCKET_NAME, recursive=True):
-        if obj.object_name.startswith(LAKE_BRONZE_PATH) and obj.object_name.endswith(".parquet"):
+        if obj.object_name.startswith(LAKE_BRONZE_PATH.rstrip("/") + "/") and obj.object_name.endswith(".parquet"):
             parts = obj.object_name[len(LAKE_BRONZE_PATH) :].strip("/").split("/")
             partition_key = "/".join(parts[:-1]) if len(parts) > 1 else "root"
             partition_stats[partition_key]["files"] += 1
             partition_stats[partition_key]["bytes"] += obj.size
-        elif obj.object_name.startswith(LAKE_QUARANTINE_PATH) and obj.object_name.endswith(".parquet"):
+        elif obj.object_name.startswith(LAKE_QUARANTINE_PATH.rstrip("/") + "/") and obj.object_name.endswith(".parquet"):
             quarantine_stats["files"] += 1
             quarantine_stats["bytes"] += obj.size
 

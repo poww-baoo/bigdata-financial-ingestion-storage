@@ -1,0 +1,205 @@
+{
+  "row_count": 1000,
+  "rows_sha256": "5e788b587f1b0180956d11e254f17b929f54ad452125e641477575881adaf3ea",
+  "bronze_files": 45,
+  "bronze_bytes": 410386,
+  "partitions": [
+    "bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT",
+    "bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT",
+    "bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT",
+    "bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT",
+    "bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER"
+  ],
+  "compression": [
+    "SNAPPY"
+  ],
+  "quarantine_files": 1,
+  "quarantine_sha256": "fe4914339ed58419d91b9f585a112dadf1c5ddfbfb51705bcffe6385e431b16d",
+  "objects": [
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT/part-47d765a36a2f.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT/part-5e7aeb4cf4a7.snappy.parquet",
+      "bytes": 9066
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT/part-937f2d801069.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT/part-aff250c02b6a.snappy.parquet",
+      "bytes": 9069
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=CASH_OUT/part-bc602bde759b.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT/part-2b9261ebb3af.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT/part-4b199423fcb9.snappy.parquet",
+      "bytes": 9066
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT/part-500bdb64c971.snappy.parquet",
+      "bytes": 9069
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT/part-95f0153ea118.snappy.parquet",
+      "bytes": 9069
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-07/tx_type=PAYMENT/part-cacaf46492b7.snappy.parquet",
+      "bytes": 9069
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT/part-1438fdcda9f0.snappy.parquet",
+      "bytes": 9104
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT/part-2455bbb334eb.snappy.parquet",
+      "bytes": 9106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT/part-336e5ef636fe.snappy.parquet",
+      "bytes": 9106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT/part-c0ebcc41b064.snappy.parquet",
+      "bytes": 9105
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=PAYMENT/part-e5c8fe5f2ae6.snappy.parquet",
+      "bytes": 9107
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER/part-340a5716a7ea.snappy.parquet",
+      "bytes": 9104
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER/part-773b4f3e45f8.snappy.parquet",
+      "bytes": 9105
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER/part-d5a7ec658ec5.snappy.parquet",
+      "bytes": 9106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER/part-de0965e8be9e.snappy.parquet",
+      "bytes": 9106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-08/tx_type=TRANSFER/part-e51f10717d54.snappy.parquet",
+      "bytes": 9105
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN/part-2c4ad87ba152.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN/part-4f6ca7bf73b4.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN/part-5751efa5dbb6.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN/part-6c880d51f459.snappy.parquet",
+      "bytes": 9067
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_IN/part-dbf7362fb2a7.snappy.parquet",
+      "bytes": 9069
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT/part-020ee2f7d1e8.snappy.parquet",
+      "bytes": 9067
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT/part-3265cc2945f5.snappy.parquet",
+      "bytes": 9067
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT/part-7f527287f8de.snappy.parquet",
+      "bytes": 9067
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT/part-865642a6e41c.snappy.parquet",
+      "bytes": 9069
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=CASH_OUT/part-d9683d8160f9.snappy.parquet",
+      "bytes": 9069
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT/part-40d59c73f42c.snappy.parquet",
+      "bytes": 9067
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT/part-7445992ac66c.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT/part-cb6fe5e7ed09.snappy.parquet",
+      "bytes": 9070
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT/part-d84669dc92fc.snappy.parquet",
+      "bytes": 9068
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=DEBIT/part-e1a57237c831.snappy.parquet",
+      "bytes": 9067
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT/part-3eaac2668c30.snappy.parquet",
+      "bytes": 9106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT/part-adac87e82ecd.snappy.parquet",
+      "bytes": 9105
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT/part-d220ca646c67.snappy.parquet",
+      "bytes": 9102
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT/part-eabee3d7631d.snappy.parquet",
+      "bytes": 9106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=PAYMENT/part-f58cefd9876b.snappy.parquet",
+      "bytes": 9106
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER/part-207546f970b1.snappy.parquet",
+      "bytes": 9422
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER/part-24c1f658822d.snappy.parquet",
+      "bytes": 9421
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER/part-3a48ffd38b61.snappy.parquet",
+      "bytes": 9420
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER/part-84ab00affc7b.snappy.parquet",
+      "bytes": 9423
+    },
+    {
+      "key": "bronze/transactions/tx_date=2026-11-09/tx_type=TRANSFER/part-e94a555b06de.snappy.parquet",
+      "bytes": 9422
+    }
+  ],
+  "anonymous_get_status": 403
+}
