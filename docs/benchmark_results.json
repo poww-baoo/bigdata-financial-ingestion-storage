@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-11-11T07:57:32.435243+00:00",
+  "total_benchmark_records": 100000,
+  "execution_time_seconds": 7.55,
+  "experiment_1_throughput_latency": [
+    {
+      "Batch_Size": "1,000 msgs",
+      "Records": 1000,
+      "Latency_ms": 12.18,
+      "Throughput_rec_sec": 82120.7
+    },
+    {
+      "Batch_Size": "5,000 msgs",
+      "Records": 5000,
+      "Latency_ms": 22.55,
+      "Throughput_rec_sec": 221742.6
+    },
+    {
+      "Batch_Size": "10,000 msgs",
+      "Records": 10000,
+      "Latency_ms": 33.29,
+      "Throughput_rec_sec": 300394.8
+    },
+    {
+      "Batch_Size": "20,000 msgs",
+      "Records": 20000,
+      "Latency_ms": 67.07,
+      "Throughput_rec_sec": 298191.0
+    }
+  ],
+  "experiment_2_storage_compression": [
+    {
+      "Format": "Raw JSON Lines",
+      "Size_MB": 34.93,
+      "Savings_vs_JSON": "0.0%"
+    },
+    {
+      "Format": "Raw CSV",
+      "Size_MB": 13.9,
+      "Savings_vs_JSON": "60.2%"
+    },
+    {
+      "Format": "Parquet (Snappy)",
+      "Size_MB": 6.63,
+      "Savings_vs_JSON": "81.0%"
+    }
+  ],
+  "experiment_3_partition_pruning": [
+    {
+      "Storage_Layout": "Unpartitioned (Quét toàn bộ)",
+      "Query_Time_ms": 6.33,
+      "Speedup": "1.0x (Cơ sở)"
+    },
+    {
+      "Storage_Layout": "Partitioned (tx_date/tx_type)",
+      "Query_Time_ms": 3.33,
+      "Speedup": "1.9x nhanh hơn"
+    }
+  ],
+  "experiment_4_veracity_accuracy": [
+    {
+      "Category": "Tổng đầu vào (Input)",
+      "Records": 11000,
+      "Percentage": "100.0%"
+    },
+    {
+      "Category": "Lưu hợp lệ (Bronze Lake)",
+      "Records": 10000,
+      "Percentage": "90.9%"
+    },
+    {
+      "Category": "Khử trùng lặp (Deduplicated)",
+      "Records": 500,
+      "Percentage": "4.5%"
+    },
+    {
+      "Category": "Cách ly lỗi (Quarantine/DLQ)",
+      "Records": 500,
+      "Percentage": "4.5%"
+    }
+  ]
+}

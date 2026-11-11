@@ -101,9 +101,14 @@ Phần Storage đã được kiểm chứng trên MinIO thật: **1.000 giao d�
 
 ### Bước 6: Chạy Thực nghiệm Benchmark & Xuất Biểu đồ Báo cáo (Thành viên 4)
 ```powershell
-python -m src.benchmark.run_benchmarks --records 50000
+python -m src.benchmark.run_benchmarks --records 100000
 ```
-Các biểu đồ kết quả sẽ được lưu tự động tại `docs/charts/`:
-- `exp2_storage_compression.png` (So sánh dung lượng Raw JSON vs CSV vs Parquet Snappy)
+Chi tiết đóng góp báo cáo của Thành viên 4 (Chương 6, 7, 8, 9): [Tài liệu thành viên 4](docs/tv4_report_contribution.md).
+Biên bản nghiệm thu & kiểm chứng hệ thống: [Biên bản nghiệm thu TV4](docs/screenshots/tv4_verification_log.txt) và [Số liệu JSON đo kiểm](docs/benchmark_results.json).
+
+Bộ 04 biểu đồ phân tích hiệu năng cao được lưu tự động tại `docs/charts/`:
+- `exp1_throughput_latency.png` (Thông lượng tiếp nhận records/s và độ trễ vi lô ms qua các mức tải)
+- `exp2_storage_compression.png` (So sánh dung lượng Raw JSON Lines vs CSV vs Parquet Snappy)
 - `exp3_partition_pruning.png` (Tốc độ truy vấn SQL có và không có Partition Pruning)
-- `exp4_veracity_accuracy.png` (Độ chính xác khử trùng & lọc lỗi Quarantine)
+- `exp4_veracity_accuracy.png` (Độ chính xác khử trùng 100% & lọc lỗi cách ly Quarantine/DLQ)
+
