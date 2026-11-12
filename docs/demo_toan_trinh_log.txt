@@ -1,0 +1,92 @@
+Topic created: financial_demo_2026
+Topic created: financial_demo_dlq_2026
+[PRODUCER] Bắt đầu gửi 3,000 sự kiện vào topic 'financial_demo_2026' (Tốc độ mục tiêu: 1,000 msg/s | Tỷ lệ lỗi: 3.0% | Tỷ lệ trùng: 2.0%)
+[PRODUCER] Hoàn tất! Tổng gửi: 3,061 bản ghi trong 3.0s (1,020.25 msg/s) | Hợp lệ gốc: 2,923 | Trùng lặp: 61 | Lỗi giả lập: 77
+[STREAMING SINK] Đang lắng nghe Kafka topic 'financial_demo_2026' -> Ghi xuống s3a://financial-demo-isolated/bronze/transactions...
+[BATCH #1] Đã ghi: 978 hợp lệ | Cách ly (Quarantine): 22 | Lọc trùng tích lũy: 17
+[BATCH #2] Đã ghi: 980 hợp lệ | Cách ly (Quarantine): 20 | Lọc trùng tích lũy: 39
+[BATCH #3] Đã ghi: 965 hợp lệ | Cách ly (Quarantine): 35 | Lọc trùng tích lũy: 61
+[STREAMING SINK] Hoàn tất đồng bộ! Tổng đọc: 3,061 | Lưu hợp lệ: 2,923 | Lọc trùng: 61 | Cách ly lỗi: 77
+{
+  "producer": {
+    "total_sent": 3061,
+    "valid_sent": 2923,
+    "fault_injected": 77,
+    "duplicates_sent": 61,
+    "duration_sec": 3.0,
+    "throughput_msg_sec": 1020.25
+  },
+  "sink": {
+    "batches_processed": 3,
+    "total_consumed": 3061,
+    "valid_written": 2923,
+    "duplicates_dropped": 61,
+    "quarantined_written": 77,
+    "parquet_files_created": 36
+  },
+  "bronze_rows": 2923,
+  "bronze_unique_ids": 2923,
+  "quarantine_rows": 77,
+  "dlq_messages": 77,
+  "bronze_files": 36,
+  "quarantine_files": 12,
+  "bronze_objects": [
+    "bronze/transactions/tx_date=2026-11-10/tx_type=CASH_IN/part-f5291720a21b.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-10/tx_type=CASH_IN/part-fac4c7dde2f7.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-10/tx_type=CASH_OUT/part-567353c8081d.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-10/tx_type=CASH_OUT/part-8d16f7eb1f18.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-10/tx_type=DEBIT/part-18afde4fb66f.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-10/tx_type=DEBIT/part-68ed6c638738.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-10/tx_type=PAYMENT/part-3a894256df6b.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-10/tx_type=PAYMENT/part-d9ee98f67594.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-10/tx_type=TRANSFER/part-ec109bb3e00b.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=CASH_IN/part-623d91638b2e.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=CASH_IN/part-f81944679cc5.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=CASH_OUT/part-39c8e42d8a00.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=CASH_OUT/part-812fca7389d6.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=DEBIT/part-8b26d88f2c6f.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=DEBIT/part-db6839abd735.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=PAYMENT/part-55929bb36b7a.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=PAYMENT/part-ed0a1f784243.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-11/tx_type=TRANSFER/part-8a1ddccf8a2c.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=CASH_IN/part-1b102281ece0.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=CASH_IN/part-4fab9a091cc3.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=CASH_OUT/part-40230783b721.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=CASH_OUT/part-c6375733166f.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=DEBIT/part-21653dcbb81d.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=DEBIT/part-319519c0a864.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=PAYMENT/part-04de8327de40.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=PAYMENT/part-f8640defbc80.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-12/tx_type=TRANSFER/part-2e2db1690349.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=CASH_IN/part-677948ead688.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=CASH_IN/part-de6f66700e61.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=CASH_OUT/part-9cd50e86897a.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=CASH_OUT/part-eba4499c1fb8.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=DEBIT/part-b812d97702c1.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=DEBIT/part-db2ad22c2807.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=PAYMENT/part-cdd4dd575cad.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=PAYMENT/part-fbf8cb55b958.snappy.parquet",
+    "bronze/transactions/tx_date=2026-11-13/tx_type=TRANSFER/part-26443c2077e9.snappy.parquet"
+  ],
+  "quarantine_objects": [
+    "quarantine/bad_transactions/rejected_date=2026-11-10/part-0f2bb6d7b482.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-10/part-6f5671621484.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-10/part-8036699dd473.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-11/part-5e0d2bb29562.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-11/part-76ee9111c8b5.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-11/part-78fd22eb0dbe.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-12/part-1fa19480e0fa.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-12/part-8731d5defb55.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-12/part-e7e9b8d219e6.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-13/part-63b780e8f028.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-13/part-c74b9dbe7d14.snappy.parquet",
+    "quarantine/bad_transactions/rejected_date=2026-11-13/part-f6b24e0ea8c8.snappy.parquet"
+  ],
+  "checks": {
+    "input_equals_received": true,
+    "accepted_matches": true,
+    "duplicates_match": true,
+    "faults_match": true,
+    "bronze_unique": true
+  }
+}

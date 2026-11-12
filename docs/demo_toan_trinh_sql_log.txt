@@ -1,0 +1,126 @@
+
+[schema]
+       column_name column_type null  key default extra
+    transaction_id     VARCHAR  YES None    None  None
+        event_time     VARCHAR  YES None    None  None
+              step      BIGINT  YES None    None  None
+            amount      DOUBLE  YES None    None  None
+          currency     VARCHAR  YES None    None  None
+         sender_id     VARCHAR  YES None    None  None
+sender_old_balance      DOUBLE  YES None    None  None
+sender_new_balance      DOUBLE  YES None    None  None
+       receiver_id     VARCHAR  YES None    None  None
+   payment_channel     VARCHAR  YES None    None  None
+    is_fraud_label      BIGINT  YES None    None  None
+       ingested_at     VARCHAR  YES None    None  None
+   kafka_partition      BIGINT  YES None    None  None
+      kafka_offset      BIGINT  YES None    None  None
+           tx_date        DATE  YES None    None  None
+           tx_type     VARCHAR  YES None    None  None
+
+[totals]
+ total_records  unique_transactions  duplicate_records  invalid_records
+          2923                 2923                  0                0
+
+[by_partition]
+   tx_date  tx_type currency  total_transactions  total_amount
+2026-11-10  CASH_IN      VND                  59  1.410257e+09
+2026-11-10 CASH_OUT      VND                  90  2.434759e+09
+2026-11-10    DEBIT      VND                  25  6.535906e+08
+2026-11-10  PAYMENT      VND                 138  3.595510e+09
+2026-11-10 TRANSFER      VND                 110  2.768878e+09
+2026-11-11  CASH_IN      VND                 130  3.272954e+09
+2026-11-11 CASH_OUT      VND                 186  4.930320e+09
+2026-11-11    DEBIT      VND                  65  1.599394e+09
+2026-11-11  PAYMENT      VND                 365  9.311173e+09
+2026-11-11 TRANSFER      VND                 253  6.279958e+09
+2026-11-12  CASH_IN      VND                 117  2.899210e+09
+2026-11-12 CASH_OUT      VND                 181  4.563611e+09
+2026-11-12    DEBIT      VND                  43  1.211567e+09
+2026-11-12  PAYMENT      VND                 339  7.964633e+09
+2026-11-12 TRANSFER      VND                 240  6.310024e+09
+2026-11-13  CASH_IN      VND                  99  2.394221e+09
+2026-11-13 CASH_OUT      VND                 142  3.695328e+09
+2026-11-13    DEBIT      VND                  29  7.096108e+08
+2026-11-13  PAYMENT      VND                 183  4.444603e+09
+2026-11-13 TRANSFER      VND                 129  3.281665e+09
+
+[by_channel]
+   tx_date payment_channel currency  total_transactions  total_amount
+2026-11-10             ATM      VND                 106  2.562799e+09
+2026-11-10      MOBILE_APP      VND                  95  2.514197e+09
+2026-11-10             POS      VND                  98  2.552971e+09
+2026-11-10             WEB      VND                 123  3.233028e+09
+2026-11-11             ATM      VND                 222  5.710515e+09
+2026-11-11      MOBILE_APP      VND                 303  7.202512e+09
+2026-11-11             POS      VND                 237  6.456460e+09
+2026-11-11             WEB      VND                 237  6.024311e+09
+2026-11-12             ATM      VND                 210  5.208051e+09
+2026-11-12      MOBILE_APP      VND                 229  5.882792e+09
+2026-11-12             POS      VND                 239  6.043642e+09
+2026-11-12             WEB      VND                 242  5.814560e+09
+2026-11-13             ATM      VND                 154  3.678612e+09
+2026-11-13      MOBILE_APP      VND                 140  3.487059e+09
+2026-11-13             POS      VND                 145  3.788370e+09
+2026-11-13             WEB      VND                 143  3.571387e+09
+
+[sample]
+              transaction_id               event_time  step      amount currency  sender_id  sender_old_balance  sender_new_balance receiver_id payment_channel  is_fraud_label              ingested_at  kafka_partition  kafka_offset    tx_date  tx_type
+TXN-20261110-00000008-E5EAED 2026-11-10T20:14:19.459Z     1 33910476.93      VND C668285316         81579360.68         47668883.75  M253680830      MOBILE_APP               0 2026-11-12T13:56:58.945Z                0             2 2026-11-10  PAYMENT
+TXN-20261110-00000023-43159F 2026-11-10T22:20:52.459Z     1 25889739.24      VND C518442873         60672344.44         86562083.68  M831122401             POS               0 2026-11-12T13:56:57.526Z                1             8 2026-11-10  CASH_IN
+TXN-20261110-00000026-1E1C55 2026-11-10T17:43:59.459Z     1 38447559.87      VND C896444821         51348556.18         89796116.05  M143819755             ATM               0 2026-11-12T13:56:57.526Z                1             9 2026-11-10  CASH_IN
+TXN-20261110-00000038-F43E74 2026-11-10T16:13:06.459Z     1  9429645.51      VND C385821943         62479274.50         53049628.99  M783573567      MOBILE_APP               0 2026-11-12T13:56:57.526Z                2             6 2026-11-10 TRANSFER
+TXN-20261110-00000047-5098FF 2026-11-10T16:37:25.459Z     1 11792825.73      VND C822866484         76895724.02         65102898.29  M243184569             WEB               0 2026-11-12T13:56:57.526Z                1            19 2026-11-10 CASH_OUT
+TXN-20261110-00000056-01A999 2026-11-10T22:43:54.459Z     1 37430393.32      VND C299789122         89750375.44         52319982.12  M458683246             ATM               0 2026-11-12T13:56:58.945Z                0            26 2026-11-10  PAYMENT
+TXN-20261110-00000062-137E94 2026-11-10T22:27:42.459Z     1 41971508.74      VND C677719858        124627497.24         82655988.50  M271680036             WEB               0 2026-11-12T13:56:58.945Z                0            30 2026-11-10  PAYMENT
+TXN-20261110-00000065-7C57D2 2026-11-10T23:16:03.459Z     1 40201315.70      VND C476062431         78818822.37         38617506.67  M607004448             WEB               0 2026-11-12T13:56:57.526Z                1            24 2026-11-10 CASH_OUT
+TXN-20261110-00000068-A51DDD 2026-11-10T23:54:18.459Z     1  4784413.84      VND C425631541         74682830.71         69898416.87  M998340626             WEB               0 2026-11-12T13:56:58.945Z                0            33 2026-11-10  PAYMENT
+TXN-20261110-00000071-5D6E80 2026-11-10T15:51:22.459Z     1 38299899.02      VND C600379387         61004218.61         22704319.59  M541879053             ATM               0 2026-11-12T13:56:57.526Z                2             8 2026-11-10 TRANSFER
+TXN-20261110-00000074-5C7EF4 2026-11-10T18:20:33.459Z     1  1939662.64      VND C857453812         89085608.04         87145945.40  M698335150      MOBILE_APP               0 2026-11-12T13:56:58.945Z                0            35 2026-11-10  PAYMENT
+TXN-20261110-00000077-3DA5AB 2026-11-10T17:55:18.459Z     1 24623625.28      VND C989822775         38697767.77         14074142.49  M525573053             ATM               0 2026-11-12T13:56:57.526Z                2            10 2026-11-10 TRANSFER
+TXN-20261110-00000083-D74DAB 2026-11-10T14:47:49.459Z     1 14510922.86      VND C344079627        109863904.51         95352981.65  M669324862             WEB               0 2026-11-12T13:56:57.526Z                2            13 2026-11-10 TRANSFER
+TXN-20261110-00000092-1DCB4F 2026-11-10T18:28:17.459Z     1  3883085.69      VND C186220798         87076322.01         83193236.32  M264483986             ATM               0 2026-11-12T13:56:57.526Z                2            19 2026-11-10 TRANSFER
+TXN-20261110-00000104-23F514 2026-11-10T21:54:06.459Z     1 48847419.00      VND C657359050        134177722.18         85330303.18  M234288016             ATM               1 2026-11-12T13:56:57.526Z                2            21 2026-11-10 TRANSFER
+TXN-20261110-00000110-6ED99A 2026-11-10T21:50:55.459Z     1 40992705.87      VND C773101007         89153056.84         48160350.97  M558341723      MOBILE_APP               0 2026-11-12T13:56:57.526Z                2            23 2026-11-10 TRANSFER
+TXN-20261110-00000113-56580D 2026-11-10T22:59:01.459Z     1 43378287.28      VND C556753657         73002614.75         29624327.47  M483536200             POS               0 2026-11-12T13:56:58.945Z                0            45 2026-11-10  PAYMENT
+TXN-20261110-00000119-D16032 2026-11-10T20:48:37.459Z     1 19402338.54      VND C783278122         72266320.06         52863981.52  M418865240             ATM               0 2026-11-12T13:56:58.945Z                0            49 2026-11-10  PAYMENT
+TXN-20261110-00000128-65C0CD 2026-11-10T16:34:24.459Z     1 21320941.79      VND C151156202         98216316.86         76895375.07  M670883868             POS               0 2026-11-12T13:56:57.526Z                2            26 2026-11-10 TRANSFER
+TXN-20261110-00000152-3FAD69 2026-11-10T22:46:01.459Z     1 42648064.32      VND C726257354        119218652.37         76570588.05  M577587753             POS               0 2026-11-12T13:56:58.945Z                0            66 2026-11-10  PAYMENT
+
+[quarantine]
+rejected_date                     error_reason  rejected_records
+   2026-11-10     INVALID_TX_TYPE:UNKNOWN_TYPE                 6
+   2026-11-10               MISSING_ACCOUNT_ID                 6
+   2026-11-10 NON_POSITIVE_AMOUNT:-15758024.16                 1
+   2026-11-10 NON_POSITIVE_AMOUNT:-35515031.71                 1
+   2026-11-10   NON_POSITIVE_AMOUNT:-682104.35                 1
+   2026-11-11     INVALID_TX_TYPE:UNKNOWN_TYPE                11
+   2026-11-11               MISSING_ACCOUNT_ID                 6
+   2026-11-11 NON_POSITIVE_AMOUNT:-12284573.27                 1
+   2026-11-11  NON_POSITIVE_AMOUNT:-1847349.14                 1
+   2026-11-11 NON_POSITIVE_AMOUNT:-23774049.56                 1
+   2026-11-11 NON_POSITIVE_AMOUNT:-26126828.06                 1
+   2026-11-11   NON_POSITIVE_AMOUNT:-3708790.1                 1
+   2026-11-11 NON_POSITIVE_AMOUNT:-37432398.95                 1
+   2026-11-11 NON_POSITIVE_AMOUNT:-44806557.08                 1
+   2026-11-11  NON_POSITIVE_AMOUNT:-5459601.18                 1
+   2026-11-12     INVALID_TX_TYPE:UNKNOWN_TYPE                 7
+   2026-11-12               MISSING_ACCOUNT_ID                 9
+   2026-11-12 NON_POSITIVE_AMOUNT:-14257863.88                 1
+   2026-11-12 NON_POSITIVE_AMOUNT:-19892060.43                 1
+   2026-11-12 NON_POSITIVE_AMOUNT:-24612267.49                 1
+   2026-11-12  NON_POSITIVE_AMOUNT:-28118072.2                 1
+   2026-11-12  NON_POSITIVE_AMOUNT:-3081349.54                 1
+   2026-11-12 NON_POSITIVE_AMOUNT:-36993070.75                 1
+   2026-11-12 NON_POSITIVE_AMOUNT:-42898771.76                 1
+   2026-11-12 NON_POSITIVE_AMOUNT:-45000956.27                 1
+   2026-11-12   NON_POSITIVE_AMOUNT:-6030218.0                 1
+   2026-11-12  NON_POSITIVE_AMOUNT:-6780967.58                 1
+   2026-11-12  NON_POSITIVE_AMOUNT:-9837376.28                 1
+   2026-11-13     INVALID_TX_TYPE:UNKNOWN_TYPE                 4
+   2026-11-13               MISSING_ACCOUNT_ID                 1
+   2026-11-13 NON_POSITIVE_AMOUNT:-12646504.45                 1
+   2026-11-13 NON_POSITIVE_AMOUNT:-28971146.55                 1
+   2026-11-13  NON_POSITIVE_AMOUNT:-29947066.0                 1
+   2026-11-13 NON_POSITIVE_AMOUNT:-33631577.92                 1
+   2026-11-13  NON_POSITIVE_AMOUNT:-3436812.22                 1

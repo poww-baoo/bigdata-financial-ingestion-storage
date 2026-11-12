@@ -1,0 +1,20 @@
+{
+  "checked_at_utc": "2026-11-12T17:04:02.099549+00:00",
+  "document": "report_hoan_thien.docx",
+  "document_sha256": "1fcb3040b3faadb643ef6e496db8280aa057731c78960042639a2adc19cc12f2",
+  "renderer": "ONLYOFFICE x2t 10.0.0.169 from installed snap; packaged render_docx.py unavailable because pdf2image is missing",
+  "rendered_pages": 42,
+  "toc_entries_verified": 51,
+  "chapters": 9,
+  "abstract_words": 234,
+  "embedded_images": 12,
+  "redrawn_charts": 4,
+  "visual_review": "All 42 pages reviewed; pages 18-24 reviewed again after chart replacement",
+  "schema_probe_cases": 9,
+  "schema_probe_source_hash_matches": true,
+  "demo_saved_evidence_matches": true,
+  "pipeline_rerun": false,
+  "benchmark_rerun": false,
+  "final_pdf_delivered": false,
+  "original_document": "report_updated.docx preserved"
+}

@@ -1,0 +1,188 @@
+{
+  "checked_at_utc": "2026-11-12T16:53:02.825874+00:00",
+  "source": "src/ingestion_sink/spark_kafka_to_lake.py",
+  "source_sha256": "0dc0d6796e2a0aa362d7bc50e91f0327890a25b44352a916517feda960416850",
+  "method": "AST extraction of validate_transaction and literal VALID_TX_TYPES; no service imports",
+  "scope": "Isolated Python function only; no Kafka, Arrow serialization or MinIO; not a compliance test",
+  "cases": [
+    {
+      "case": "valid_baseline",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "event_time": "2026-11-12T08:00:00Z",
+        "step": 1,
+        "tx_type": "PAYMENT",
+        "amount": 100.0,
+        "currency": "VND",
+        "sender_id": "C01",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": true,
+      "reason": "OK",
+      "matches_documented_behavior": true
+    },
+    {
+      "case": "amount_not_numeric",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "event_time": "2026-11-12T08:00:00Z",
+        "step": 1,
+        "tx_type": "PAYMENT",
+        "amount": "abc",
+        "currency": "VND",
+        "sender_id": "C01",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": false,
+      "reason": "INVALID_AMOUNT_NUMBER",
+      "matches_documented_behavior": true
+    },
+    {
+      "case": "amount_numeric_string",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "event_time": "2026-11-12T08:00:00Z",
+        "step": 1,
+        "tx_type": "PAYMENT",
+        "amount": "100",
+        "currency": "VND",
+        "sender_id": "C01",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": true,
+      "reason": "OK",
+      "matches_documented_behavior": true
+    },
+    {
+      "case": "missing_sender_id",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "event_time": "2026-11-12T08:00:00Z",
+        "step": 1,
+        "tx_type": "PAYMENT",
+        "amount": 100.0,
+        "currency": "VND",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": false,
+      "reason": "MISSING_ACCOUNT_ID",
+      "matches_documented_behavior": true
+    },
+    {
+      "case": "missing_event_time",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "step": 1,
+        "tx_type": "PAYMENT",
+        "amount": 100.0,
+        "currency": "VND",
+        "sender_id": "C01",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": true,
+      "reason": "OK",
+      "matches_documented_behavior": true
+    },
+    {
+      "case": "invalid_event_time",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "event_time": "not-a-date",
+        "step": 1,
+        "tx_type": "PAYMENT",
+        "amount": 100.0,
+        "currency": "VND",
+        "sender_id": "C01",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": true,
+      "reason": "OK",
+      "matches_documented_behavior": true
+    },
+    {
+      "case": "invalid_step",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "event_time": "2026-11-12T08:00:00Z",
+        "step": "abc",
+        "tx_type": "PAYMENT",
+        "amount": 100.0,
+        "currency": "VND",
+        "sender_id": "C01",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": true,
+      "reason": "OK",
+      "matches_documented_behavior": true
+    },
+    {
+      "case": "unknown_currency",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "event_time": "2026-11-12T08:00:00Z",
+        "step": 1,
+        "tx_type": "PAYMENT",
+        "amount": 100.0,
+        "currency": "XYZ",
+        "sender_id": "C01",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": true,
+      "reason": "OK",
+      "matches_documented_behavior": true
+    },
+    {
+      "case": "python_nan_amount",
+      "input": {
+        "transaction_id": "PROBE-001",
+        "event_time": "2026-11-12T08:00:00Z",
+        "step": 1,
+        "tx_type": "PAYMENT",
+        "amount": "Python float NaN (not a JSON payload)",
+        "currency": "VND",
+        "sender_id": "C01",
+        "sender_old_balance": 1000.0,
+        "sender_new_balance": 900.0,
+        "receiver_id": "M01",
+        "payment_channel": "MOBILE_APP",
+        "is_fraud_label": 0
+      },
+      "accepted": true,
+      "reason": "OK",
+      "matches_documented_behavior": true
+    }
+  ],
+  "all_match_documented_behavior": true
+}
