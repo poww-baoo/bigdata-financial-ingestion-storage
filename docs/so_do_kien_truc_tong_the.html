@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiến trúc tổng thể hệ thống Ingestion và Storage</title>
+<style>
+/* Palette follows the report: white paper, navy outlines, restrained teal focal nodes. */
+html,body { margin:0; background:#fff; color:#203c59; font-family:"DejaVu Sans",Arial,sans-serif; }
+.frame { overflow-x:auto; }
+svg { display:block; width:1200px; min-width:1200px; height:1200px; }
+svg text { font-family:"DejaVu Sans",Arial,sans-serif; fill:#203c59; }
+.title { font-size:30px; font-weight:700; }
+.subtitle { font-size:18px; fill:#4c6074; }
+.zone { fill:#f7f9fc; stroke:#91a4b8; stroke-width:1.6; stroke-dasharray:8 5; }
+.zone-title { font-size:21px; font-weight:700; }
+.zone-sub { font-size:16px; fill:#4c6074; }
+.node { fill:#fff; stroke:#526e89; stroke-width:1.8; }
+.focal { fill:#edf7f6; stroke:#16666b; stroke-width:2; }
+.name { font-size:24px; font-weight:700; }
+.body { font-size:17px; }
+.small { font-size:16px; fill:#4c6074; }
+.tech { font-family:"DejaVu Sans Mono",monospace; font-size:16px; }
+.rule { stroke:#c3d1dd; stroke-width:1; }
+.edge { fill:none; stroke:#385775; stroke-width:2.3; stroke-linejoin:round; }
+.api { stroke:#16666b; }
+.admin { stroke-dasharray:6 5; }
+.edge-label { font-size:17px; font-weight:600; }
+.edge-detail { font-size:15px; fill:#4c6074; }
+.note { font-size:16px; fill:#4c6074; }
+@media print { .frame { overflow:visible; } svg { width:100%; height:auto; min-width:0; } }
+</style>
+</head>
+<body>
+<main class="frame">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="financial-architecture-title financial-architecture-desc">
+<title id="financial-architecture-title">Kiến trúc tổng thể hệ thống Ingestion và Storage</title>
+<desc id="financial-architecture-desc">Các ứng dụng Python trên máy chạy demo gọi Kafka và MinIO trong Docker Compose. Producer gửi JSON tới Kafka. Bộ xử lý microbatch đọc và commit offset, gửi một số lỗi tới topic DLQ, ghi Parquet và thông tin batch lên MinIO. DuckDB đọc MinIO qua S3; công cụ compaction đọc ghi MinIO khi áp dụng. Kafka UI kết nối Kafka qua mạng Docker. Mũi tên biểu thị bên gọi tới dịch vụ được gọi, không biểu thị chiều di chuyển của từng bản ghi.</desc>
+<rect width="1200" height="1200" fill="#fff"/>
+<text class="title" x="40" y="58">KIẾN TRÚC TỔNG THỂ HỆ THỐNG</text>
+<text class="subtitle" x="40" y="94">Thu thập và lưu trữ giao dịch tài chính · Cấu hình demo microbatch</text>
+<text class="subtitle" x="40" y="126">Thành phần triển khai, công nghệ sử dụng và giao diện kết nối</text>
+
+<!-- These are deployment groupings on the same demo machine, not security boundaries. -->
+<rect class="zone" x="40" y="168" width="420" height="864" rx="8"/>
+<rect class="zone" x="740" y="168" width="420" height="864" rx="8"/>
+<text class="zone-title" x="68" y="204">ỨNG DỤNG TRÊN MÁY DEMO</text>
+<text class="zone-sub" x="68" y="231">Các tiến trình Python chạy ngoài Docker</text>
+<text class="zone-title" x="768" y="204">HẠ TẦNG DOCKER COMPOSE</text>
+<text class="zone-sub" x="768" y="231">Các dịch vụ trên cùng máy demo</text>
+
+<!-- Connectors precede nodes. Arrow direction is caller -> called service. -->
+<path class="edge" d="M432 310 H756"/>
+<polygon points="768,310 755,304 755,316" fill="#385775"/>
+<path class="edge" d="M432 466 H544 Q552 466 552 458 V386 Q552 378 560 378 H756"/>
+<polygon points="768,378 755,372 755,384" fill="#385775"/>
+<path class="edge" d="M432 536 H664 Q672 536 672 528 V440 Q672 432 680 432 H756"/>
+<polygon points="768,432 755,426 755,438" fill="#385775"/>
+<path class="edge api" d="M432 598 H544 Q552 598 552 606 V762 Q552 770 560 770 H756"/>
+<polygon points="768,770 755,764 755,776" fill="#16666b"/>
+<path class="edge api" d="M432 840 H756"/>
+<polygon points="768,840 755,834 755,846" fill="#16666b"/>
+<path class="edge api" d="M432 914 H756"/>
+<polygon points="768,914 755,908 755,920" fill="#16666b"/>
+<path class="edge admin" d="M1040 540 V482"/>
+<polygon points="1040,470 1034,483 1046,483" fill="#385775"/>
+
+<!-- Opaque label masks are separated from their connector strokes. -->
+<g text-anchor="middle">
+<rect x="476" y="252" width="248" height="48" fill="#fff"/>
+<text class="edge-label" x="600" y="272">Gửi message JSON</text>
+<text class="edge-detail" x="600" y="293">Kafka protocol · :9092</text>
+<rect x="568" y="322" width="164" height="46" fill="#fff"/>
+<text class="edge-label" x="650" y="341">Đọc / commit</text>
+<text class="edge-detail" x="650" y="362">Kafka · :9092</text>
+<rect x="464" y="480" width="192" height="46" fill="#fff"/>
+<text class="edge-label" x="560" y="499">Gửi một số lỗi</text>
+<text class="edge-detail" x="560" y="520">Kafka DLQ · :9092</text>
+<rect x="568" y="714" width="164" height="46" fill="#fff"/>
+<text class="edge-label" x="650" y="733">Ghi đối tượng</text>
+<text class="edge-detail" x="650" y="754">S3 / HTTP · :9000</text>
+<rect x="472" y="784" width="256" height="46" fill="#fff"/>
+<text class="edge-label" x="600" y="803">Đọc Parquet để truy vấn</text>
+<text class="edge-detail" x="600" y="824">S3 / HTTP · :9000</text>
+<rect x="476" y="858" width="248" height="46" fill="#fff"/>
+<text class="edge-label" x="600" y="877">Đọc / ghi khi áp dụng</text>
+<text class="edge-detail" x="600" y="898">S3 / HTTP · :9000</text>
+</g>
+<rect x="792" y="484" width="228" height="44" fill="#fff"/>
+<text class="edge-label" x="804" y="502">Quản trị Kafka</text>
+<text class="edge-detail" x="804" y="523">kafka:29092 (nội bộ)</text>
+
+<!-- Host-side applications. -->
+<g data-node-id="producer">
+<rect class="node" x="68" y="260" width="364" height="132" rx="6"/>
+<text class="name" x="92" y="295">Python Producer</text>
+<text class="body" x="92" y="326">Thư viện confluent-kafka</text>
+<text class="small" x="92" y="354">Đọc CSV hoặc sinh giao dịch</text>
+<text class="small" x="92" y="377">Đóng gói message JSON</text>
+</g>
+<g data-node-id="microbatch">
+<rect class="node" x="68" y="440" width="364" height="192" rx="6"/>
+<text class="name" x="92" y="475">Python Microbatch</text>
+<text class="body" x="92" y="507">confluent-kafka · pandas</text>
+<text class="body" x="92" y="534">PyArrow · MinIO Python SDK</text>
+<line class="rule" x1="92" y1="550" x2="408" y2="550"/>
+<text class="small" x="92" y="575">Kiểm tra và khử trùng bản ghi</text>
+<text class="small" x="92" y="601">Ghi Parquet nén Snappy</text>
+</g>
+<g data-node-id="duckdb">
+<rect class="node" x="68" y="744" width="364" height="124" rx="6"/>
+<text class="name" x="92" y="779">DuckDB SQL</text>
+<text class="body" x="92" y="810">Python · extension httpfs</text>
+<text class="small" x="92" y="842">Truy vấn và đối soát kho dữ liệu</text>
+</g>
+<g data-node-id="storage-tools">
+<rect class="node" x="68" y="888" width="364" height="116" rx="6"/>
+<text class="name" x="92" y="923">Công cụ bảo trì kho</text>
+<text class="body" x="92" y="952">PyArrow · MinIO Python SDK</text>
+<text class="small" x="92" y="981">Compaction: gộp các tệp nhỏ</text>
+</g>
+
+<!-- Containerized infrastructure. -->
+<g data-node-id="kafka">
+<rect class="focal" x="768" y="260" width="364" height="210" rx="6"/>
+<text class="name" x="792" y="295">Apache Kafka</text>
+<text class="body" x="792" y="326">KRaft · 1 broker / controller</text>
+<line class="rule" x1="792" y1="343" x2="1108" y2="343"/>
+<text class="tech" x="792" y="372">financial_tx</text>
+<text class="small" x="792" y="396">3 partition · replication factor 1</text>
+<text class="tech" x="792" y="430">financial_tx_dlq</text>
+<text class="small" x="792" y="454">1 partition · volume: kafka_data</text>
+</g>
+<g data-node-id="kafka-ui">
+<rect class="node" x="768" y="540" width="364" height="104" rx="6"/>
+<text class="name" x="792" y="575">Kafka UI</text>
+<text class="body" x="792" y="605">Xem topic, message và consumer</text>
+<text class="tech" x="792" y="630">Web: localhost:8080</text>
+</g>
+<g data-node-id="minio">
+<rect class="focal" x="768" y="720" width="364" height="284" rx="6"/>
+<text class="name" x="792" y="755">MinIO Object Storage</text>
+<text class="body" x="792" y="786">API tương thích Amazon S3</text>
+<line class="rule" x1="792" y1="803" x2="1108" y2="803"/>
+<text class="tech" x="792" y="834">financial-datalake</text>
+<text class="body" x="792" y="863">Bronze · Quarantine</text>
+<text class="small" x="792" y="890">Parquet / Snappy · thông tin batch</text>
+<line class="rule" x1="792" y1="910" x2="1108" y2="910"/>
+<text class="tech" x="792" y="940">S3 API: localhost:9000</text>
+<text class="tech" x="792" y="965">Console: localhost:9001</text>
+<text class="small" x="792" y="989">Volume lưu trữ: minio_data</text>
+</g>
+
+<line class="rule" x1="40" y1="1056" x2="1160" y2="1056"/>
+<path class="edge" d="M48 1084 H100"/>
+<polygon points="112,1084 99,1078 99,1090" fill="#385775"/>
+<text class="note" x="128" y="1090">Mũi tên: thành phần gọi → dịch vụ được gọi; phản hồi được lược bỏ.</text>
+<path class="edge admin" d="M48 1117 H100"/>
+<polygon points="112,1117 99,1111 99,1123" fill="#385775"/>
+<text class="note" x="128" y="1123">Nét đứt: kết nối quản trị. Các cổng thể hiện cấu hình mặc định.</text>
+<text class="note" x="40" y="1158">Phạm vi: chế độ --engine microbatch. PySpark là phương án chạy thay thế.</text>
+<text class="note" x="40" y="1183">Các dịch vụ khởi tạo một lần (kafka-init, minio-init) được lược bỏ để hình dễ đọc.</text>
+</svg>
+</main>
+<!-- Source evidence: docker-compose.yml; src/config.py;
+src/producer/transaction_producer.py; src/ingestion_sink/spark_kafka_to_lake.py;
+src/storage_management/query_verification.py; src/storage_management/compact_small_files.py.
+This depicts configured deployment structure, not a claim of live service verification.
+Compaction writes only with --apply; default execution is a dry run.
+-->
+</body>
+</html>
