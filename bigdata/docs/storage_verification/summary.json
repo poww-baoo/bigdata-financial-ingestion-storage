@@ -1,0 +1,8 @@
+{
+  "total_records": 982,
+  "unique_transactions": 982,
+  "duplicate_records": 0,
+  "invalid_records": 0,
+  "expected_records": null,
+  "passed": true
+}

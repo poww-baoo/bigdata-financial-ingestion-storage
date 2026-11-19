@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Benchmark temp & local volumes
+data/benchmark_tmp/
+data/*.csv
+!data/sample_transactions.csv
+*.log
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# AI & Agent metadata (Local only)
+agent.md
+.ignore
+graft/
+.claude/
+
+# Local storage integration runtime
+.local/
