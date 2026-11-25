@@ -52,8 +52,7 @@ Ghi chép nhanh các hoạt động nghiên cứu mỗi ngày.
     - Sao lưu an toàn: `Baocao_backup_20261111.docx`.
 
 ### 2026-11-26
-- **Hoàn thiện và tích hợp phần nghiên cứu khoa học của TV4 — Long (Đề tài C — Nhóm 4 thành viên):**
-  - **Chuẩn hóa phần riêng (Mục 2.4 — FeathrPO, PVLDB 2023):** Đối soát toàn bộ số liệu (Table 1, Table 2, KLL sketches, BIP, kết quả tăng tốc `3,00×` / `2,50×`) với file gốc `Feature-Store-FeathrPO-VLDB2023.pdf`, bổ sung link Scopus/WoS/VLDB/ACM, chuyển thể văn phong sang văn xuôi học thuật mạch lạc trong `Phan_TV4_Long_Feature_Store_va_Chuong4.md`.
-  - **Cập nhật 02 hình vẽ lại 300 DPI + Vector PDF:** Hiển thị độ chính xác 2 chữ số thập phân trên `Hinh_TV4_2_HieuNang_FeathrPO` (`1.96×`, `1.98×`, `2.02×`, `3.00×`, `2.50×`) và xuất thêm bản vector `.pdf` cho cả 2 hình của TV4 (`Hinh_TV4_1_KienTruc_FeathrPO.pdf`, `Hinh_TV4_2_HieuNang_FeathrPO.pdf`).
-  - **Hoàn thiện Chương 4 & Dàn ý Slide/Q&A:** Hoàn tất phân tích 4 cặp đánh đổi xuyên tầng, 3 khoảng trống nghiên cứu chung, 2 hướng phát triển mới và bộ câu hỏi Q&A bảo vệ (`Slide_va_QA_De_tai_C_TV4_Long.md`).
-  - **Tích hợp vào Báo cáo Cuối kỳ tổng hợp:** Xây dựng bản ghép 5 chương `BaoCao_CuoiKy_DeTaiC_Nhom4.md` và `BaoCao_CuoiKy_DeTaiC_Nhom4.docx` (bằng `build_baocao_cuoiky.py`), tích hợp đầy đủ phần Delta Lake (TV1) và phần FeathrPO + Chương 4 (TV4), giữ khung chờ cho TV2 (Cường) và TV3 (Bảo).
+- **Hoàn thiện phần nghiên cứu khoa học của TV4 — Long (Đề tài C — Nhóm 4 thành viên):**
+  - **Hợp nhất bản thảo thành 01 file Markdown duy nhất:** Toàn bộ phần riêng (Mục 2.4 — FeathrPO, PVLDB 2023), phần chung (Chương 4 — Phản biện, Đánh đổi 4 tầng, Khoảng trống nghiên cứu & Hướng phát triển) và Tài liệu tham khảo IEEE được chuẩn hóa trong duy nhất file `04 - Viết bài & Xuất bản (Writing & Publication)/Bản thảo (Drafts)/Phan_TV4_Long_Feature_Store_va_Chuong4.md` (không làm slide riêng).
+  - **Đối soát & chuẩn hóa văn phong:** Kiểm tra chéo toàn bộ số liệu (Table 1, Table 2, KLL sketches, BIP, kết quả tăng tốc `3,00×` / `2,50×`) với PDF gốc `Feature-Store-FeathrPO-VLDB2023.pdf`, bổ sung link Scopus/WoS/VLDB/ACM và diễn đạt bằng văn xuôi học thuật mạch lạc.
+  - **Cập nhật 02 hình vẽ lại 300 DPI + Vector PDF:** Hiển thị độ chính xác 2 chữ số thập phân trên `Hinh_TV4_2_HieuNang_FeathrPO` (`1.96×`, `1.98×`, `2.02×`, `3.00×`, `2.50×`) và xuất bản vector `.pdf` cho cả 2 hình của TV4 (`Hinh_TV4_1_KienTruc_FeathrPO.pdf`, `Hinh_TV4_2_HieuNang_FeathrPO.pdf`).

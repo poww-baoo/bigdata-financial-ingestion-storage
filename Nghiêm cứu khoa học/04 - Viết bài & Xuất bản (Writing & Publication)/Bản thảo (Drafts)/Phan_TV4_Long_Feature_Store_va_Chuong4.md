@@ -1,8 +1,11 @@
 # ĐÓNG GÓP BÁO CÁO CUỐI KỲ — ĐỀ TÀI C (THÀNH VIÊN 4: LONG)
 
+**Cơ sở đào tạo:** Trường Đại học Sài Gòn – Khoa Công nghệ Thông tin  
 **Học phần:** Phương pháp Nghiên cứu Khoa học trong Công nghệ Thông tin  
-**Đề tài nhóm:** *Hạ tầng quản trị dữ liệu hiện đại cho Học máy quy mô lớn: Liên kết Kiến trúc Data Lakehouse, Tối ưu hóa Lưu trữ Cột, Thực thi Vector hóa và Feature Store*  
+**Đề tài nhóm:** *Hạ tầng quản trị dữ liệu hiện đại cho Học máy quy mô lớn: Liên kết Kiến trúc Data Lakehouse, Tối ưu hóa Lưu trữ Cột, Thực thi Vector hóa và Feature Store* *(Đề tài C)*  
 **Thành viên thực hiện:** TV4 — Long  
+**Giảng viên hướng dẫn:** Vũ Ngọc Thanh Sang  
+**Ngày hoàn thiện:** 2026-11-26  
 **Phạm vi phụ trách:**
 1. **Phần riêng (Mục 2.4):** Phân tích bài báo *Optimizing Data Pipelines for Machine Learning in Feature Stores* (PVLDB 2023), minh chứng chỉ mục Scopus/WoS, 02 hình tự vẽ lại ở độ phân giải 300 DPI + vector PDF và phản biện khoa học.
 2. **Phần chung (Chương 4):** Phản biện chéo, Phân tích Đánh đổi 4 tầng, Tổng hợp Khoảng trống Nghiên cứu chung và Đề xuất Hướng phát triển.
