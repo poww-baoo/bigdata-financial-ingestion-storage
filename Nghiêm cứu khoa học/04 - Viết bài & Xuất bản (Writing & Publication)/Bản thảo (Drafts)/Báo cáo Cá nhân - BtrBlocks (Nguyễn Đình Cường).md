@@ -43,8 +43,7 @@ Bài báo được thực hiện bởi nhóm 04 nhà nghiên cứu hệ thống 
 ### 5. DOI & Đường dẫn chính thức của bài báo (DOI & Official Links)
 * **Mã định danh số (DOI):** [`10.1145/3589263`](https://doi.org/10.1145/3589263)
 * **Đường dẫn trên thư viện điện tử ACM Digital Library:** [https://dl.acm.org/doi/10.1145/3589263](https://dl.acm.org/doi/10.1145/3589263)
-* **Bản PDF lưu trữ trong Vault:** [BtrBlocks PDF](<../01 - Tổng quan tài liệu (Literature Review)/Bài báo đã đọc (Papers)/BtrBlocks: Efficient Columnar     
-  Compression for Data Lakes.pdf>)
+* **Bản PDF lưu trữ trong Vault:** [BtrBlocks-SIGMOD2023.pdf](<../../01 - Tổng quan tài liệu (Literature Review)/Bài báo đã đọc (Papers)/BtrBlocks-SIGMOD2023.pdf>)
 
 ---
 
@@ -347,7 +346,37 @@ Tại mỗi tầng đệ quy (tối đa `3` tầng), thuật toán `pickScheme` 
 
 ---
 
-# PHẦN 5: DANH MỤC TÀI LIỆU THAM KHẢO (References)
+# PHẦN 5 (MỤC 3.2 — PHẦN TÍCH HỢP CHUNG): CẦU NỐI BTRBLOCKS ↔ DELTA LAKE & MA TRẬN SO SÁNH 05 CÔNG TRÌNH
+
+## 5.1. Phân tích Cầu nối Kiến trúc: BtrBlocks (Tầng 1) ↔ Delta Lake (Tầng 2)
+
+Trong kiến trúc tổng thể 5 tầng của Đề tài C, **Delta Lake (PVLDB 2020)** đóng vai trò tầng bảng giao dịch ACID trung tâm nhưng vẫn phụ thuộc hoàn toàn vào định dạng tệp cột **Apache Parquet** cho lưu trữ vật lý trên Cloud Object Storage. Việc phân tích thay thế hoặc bổ sung **BtrBlocks (SIGMOD 2023)** làm lớp tệp cột bên dưới Delta Lake cho thấy bốn điểm cộng hưởng kỹ thuật và một đánh đổi quan trọng:
+
+1. **Cộng hưởng tách rời siêu dữ liệu (*Orthogonal Metadata Synergy*):** Điểm yếu cố hữu của Parquet trên S3 là nhúng metadata/thống kê cột vào phần đuôi tệp (*footer*), buộc trình đọc phải thực hiện tới 3 lượt HTTP GET tuần tự để lấy dữ liệu một cột. Trong khi đó, Delta Lake đã quản lý toàn bộ danh sách tệp, phân vùng và thống kê min/max tập trung trong nhật ký giao dịch `_delta_log` (dạng JSON/Parquet checkpoint). Thiết kế *tách rời siêu dữ liệu* của BtrBlocks ăn khớp tự nhiên với `_delta_log`, giúp loại bỏ hoàn toàn độ trễ đọc footer dư thừa và giữ dữ liệu tệp thuần túy là các khối nén bất biến.
+2. **Giải phóng nút thắt giải nén trên mạng đám mây 100 Gbps:** Sau khi cơ chế *Data Skipping* và *Z-Order* của Delta Lake đã loại bỏ phần lớn các tệp không liên quan, tốc độ quét các tệp còn lại phụ thuộc trực tiếp vào tốc độ giải nén trên dữ liệu nén ($T_c$). Thay Parquet+Zstd ($T_c = 24.8\text{ Gbps}$) hoặc Parquet+Snappy ($T_c = 33.2\text{ Gbps}$) bằng BtrBlocks ($T_c = 86.2\text{ Gbps}$) giúp tăng thông lượng đọc S3 thêm **2.6×–3.5×** và giảm chi phí quét đám mây khoảng **1.8×** (từ `$1.70–$1.74` xuống `$0.97` cho 10 lượt quét trên AWS `c5n.18xlarge`).
+3. **Mở đường cho tầng thực thi C++ Vector hóa (Photon) phía trên:** Các thuật toán giải nén SIMD (AVX2) của BtrBlocks tạo ra các vector dữ liệu cột liên tiếp ngay trong bộ nhớ đệm CPU, giảm đáng kể chi phí giải mã trước khi nạp vào các toán tử vector hóa C++ của Photon, hạn chế tình trạng CPU bị nghẽn ở khâu đọc tệp trước khi kịp thực thi join/aggregate.
+4. **Đánh đổi cần kiểm soát khi tích hợp:** BtrBlocks chưa hỗ trợ phổ cập rộng như Parquet trong hệ sinh thái công cụ mở (Spark/Trino/Iceberg) và ưu tiên giải nén toàn khối (64.000 dòng) hơn là truy cập điểm (*point lookup*). Ngoài ra, các cột vector đặc trưng số thực độ chính xác cao cho ML (như embedding) kém phù hợp với *Pseudodecimal Encoding*, đòi hỏi một cơ chế chọn định dạng lai (*hybrid format*) theo đặc tính bảng dữ liệu trong Delta Lake.
+
+---
+
+## 5.2. Ma trận So sánh Đa chiều 05 Công trình Nền tảng (Mục 3.2)
+
+Bảng dưới đây đối chiếu toàn diện cả **05 công trình lõi** xuyên suốt 5 tầng kiến trúc từ lưu trữ tệp nén trên Cloud Object Storage đến đường ống nạp dữ liệu huấn luyện ML vào GPU/TPU:
+
+| Tiêu chí so sánh | **Tầng 1: BtrBlocks** *(SIGMOD 2023)* | **Tầng 2: Delta Lake** *(PVLDB 2020)* | **Tầng 3: Photon** *(SIGMOD 2022)* | **Tầng 4: FeathrPO** *(PVLDB 2023)* | **Tầng 5: tf.data** *(PVLDB 2021)* |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Tác giả & Tổ chức** | Kuschewski et al. *(TU Munich, FAU)* | Armbrust et al. *(Databricks, UCB, Stanford, CWI)* | Behm et al. *(Databricks, UCB)* | Liu et al. *(Microsoft Gray Systems Lab)* | Murray et al. *(Google)* |
+| **Ấn phẩm & Xếp hạng** | ACM SIGMOD 2023 (*PACMMOD*), WoS ESCI, CORE A\* | PVLDB 2020 (Vol. 13, No. 12), Scopus Q1, WoS, CORE A\* | ACM SIGMOD 2022 (*Best Industry Paper*), Scopus, WoS, CORE A\* | PVLDB 2023 (Vol. 16, No. 13), Scopus Q1, WoS, CORE A\* | PVLDB 2021 (Vol. 14, No. 12), Scopus Q1, WoS, CORE A\* |
+| **Nút thắt giải quyết** | Parquet giải nén chậm, nghẽn CPU khi quét Data Lake trên mạng 100 Gbps | Cloud Object Store thiếu ACID, hỏng dữ liệu khi ghi lỗi, quản lý tệp nhỏ kém | Overhead JVM/GC và thực thi từng dòng của Spark khi chạy SQL/ETL quy mô lớn | Point-in-Time (PIT) Join chậm, shuffle lớn và tính toán lặp trong Feature Store | Nghẽn đường ống đầu vào (I/O & tiền xử lý CPU) khiến GPU/TPU bị nhàn rỗi |
+| **Kiến trúc & Kỹ thuật cốt lõi** | Nén đệ quy đa tầng (tối đa 3 tầng), lấy mẫu $10\times 64$ (1%), *Pseudodecimal*, *FSST*, SIMD AVX2, tách rời metadata | Nhật ký giao dịch `_delta_log` (JSON + Parquet checkpoint), OCC, *Data Skipping*, *Z-Order*, *Time Travel*, Batch+Streaming | Engine C++ vector hóa thuần túy (SIMD), quản lý bộ nhớ ngoài JVM, *Adaptive Join Compaction*, tương thích 100% Spark SQL | Mô hình chi phí dùng *KLL sketches*, viết lại truy vấn tái sử dụng (*Matcher/Rewriter*), rút gọn *Semijoin*, chọn bố cục bằng BIP (OR-Tools) | API hàm khai báo (`Dataset`/`Iterator`), tối ưu tĩnh (Grappler fusion, *map vectorization*), tối ưu động `AUTOTUNE` (mô hình hàng đợi M/M/1/k + Gradient Descent) |
+| **Dữ liệu & Benchmark** | Public BI Benchmark (43 bảng, 2.451 cột, 119.5 GB) trên AWS `c5n.18xlarge` + S3 | TPC-DS (30 TB), workload sản xuất hàng exabyte trên AWS S3 / Azure | TPC-DS 100 TB (tổng 99 truy vấn) & truy vấn công nghiệp Databricks | 4 tập dữ liệu: TPCx-AI UC7 & UC10 (SF1–SF100), Kaggle Favorita & eCommerce (Azure Synapse + Spark) | 5 mô hình MLPerf (ResNet-50/ImageNet, SSD & Mask-RCNN/COCO, GNMT/WMT16, Transformer/WMT17) + phân tích hàng triệu job thực tế tại Google |
+| **Chỉ số đánh giá chính** | Thông lượng nén $T_c$ (Gbps), $T_u$ (GB/s), tỷ lệ nén, số lượt quét S3 / USD | Thời gian chạy TPC-DS (giây), tỷ lệ bỏ qua tệp, thông lượng ghi/đọc | Thời gian chạy truy vấn, chi phí tính toán (DBU/$), hệ số tăng tốc vs Spark JVM | Hệ số cải thiện (*Factor of Improvement*), độ chính xác ước lượng KLL (%), thời gian giải BIP | Hệ số tăng tốc epoch & hội tụ đầu-cuối (×), thời gian epoch (giây) vs PyTorch/DALI |
+| **Kết quả định lượng nổi bật** | $T_c = 86.2\text{ Gbps}$ (nhanh hơn **2.6×–3.5×** Parquet+Snappy/Zstd), rẻ hơn **1.8×** (`$0.97` vs `$1.70–$1.74`) | Nhanh hơn **1.7×–2.6×** so với Parquet thuần/Hive trên TPC-DS; bỏ qua >90% dữ liệu với Z-Order | Nhanh hơn **2×–4×** trên TPC-DS 100 TB (tối đa >10× ở một số truy vấn); lập kỷ lục TPC-DS 100 TB về hiệu năng/chi phí | Tăng tốc **1.4×–3.00×** (đỉnh `3.00×` ở TPCx-AI UC10 trên Cloud); KLL chính xác **96.84%–99.73%**; giải BIP trong 6–7s | Tăng tốc đầu-cuối **2.0×–22.0×** (ResNet-50 `21.0×`, SSD `22.0×`), `AUTOTUNE` sát chuyên gia trong **1%–4%**; nhanh hơn **1.9×** PyTorch DataLoader |
+| **Hạn chế chính** | Rào cản tương thích hệ sinh thái Parquet; hạn chế *point lookup*; phụ thuộc AVX2; chưa đo trong SQL engine hoàn chỉnh | Độ trễ ghi thời gian thực bị giới hạn bởi chu kỳ commit JSON & xung đột OCC; phụ thuộc tệp Parquet cũ | Mã nguồn đóng (độc quyền Databricks); vẫn phải quay về Spark JVM cho các UDF Python/ML tùy biến | Can thiệp ở tầng logic Spark (vẫn chịu chi phí JVM); vật chất hóa đặc trưng còn chỉ định thủ công; mới hỗ trợ dữ liệu bảng | Mới tối ưu trên từng máy chủ (chưa tái sử dụng tính toán chéo giữa nhiều job mặc định); chưa đẩy lọc/chiếu dữ liệu trực tiếp xuống tầng lưu trữ |
+
+---
+
+# PHẦN 6: DANH MỤC TÀI LIỆU THAM KHẢO (References)
 
 1. **M. Kuschewski, D. Sauerwein, A. Alhomssi, and V. Leis**, *"BtrBlocks: Efficient Columnar Compression for Data Lakes,"* *Proceedings of the ACM on Management of Data (PACMMOD)*, vol. 1, no. 2, Art. 118, pp. 118:1–118:26, Jun. 2023. DOI: `10.1145/3589263`.
 2. **D. Abadi, P. A. Boncz, S. Harizopoulos, S. Idreos, and S. Madden**, *"The Design and Implementation of Modern Column-Oriented Database Systems,"* *Foundations and Trends in Databases*, vol. 5, no. 3, pp. 197–280, 2013.
@@ -356,3 +385,6 @@ Tại mỗi tầng đệ quy (tối đa `3` tầng), thuật toán `pickScheme` 
 5. **D. Lemire, G. Ssi Yan Kai, and O. Kaser**, *"Consistently faster and smaller compressed bitmaps with Roaring,"* *Software: Practice and Experience*, vol. 46, no. 11, pp. 1547–1569, 2016.
 6. **P. Damme, A. Ungethüm, J. Hildebrandt, D. Habich, and W. Lehner**, *"From a Comprehensive Experimental Survey to a Cost-based Selection Strategy for Lightweight Integer Compression Algorithms,"* *ACM Transactions on Database Systems (TODS)*, vol. 44, no. 3, Art. 9, pp. 9:1–9:46, 2019.
 7. **M. Armbrust, T. Das, L. Sun, B. Yavuz, S. Zhu, M. Murthy, et al.**, *"Delta Lake: High-Performance ACID Table Storage over Cloud Object Stores,"* *Proceedings of the VLDB Endowment (PVLDB)*, vol. 13, no. 12, pp. 3411–3424, Aug. 2020. DOI: `10.14778/3415478.3415560`.
+8. **A. Behm, S. Palkar, U. Agarwal, T. Armstrong, D. Cashman, A. Dave, et al.**, *"Photon: A Fast Query Engine for Lakehouse Systems,"* in *Proc. ACM SIGMOD Int. Conf. Management of Data*, Jun. 2022, pp. 2326–2339. DOI: `10.1145/3514221.3526054`.
+9. **R. Liu, K. Park, F. Psallidas, X. Zhu, R. Sen, M. Interlandi, et al.**, *"Optimizing Data Pipelines for Machine Learning in Feature Stores,"* *Proceedings of the VLDB Endowment (PVLDB)*, vol. 16, no. 13, pp. 4230–4239, Aug. 2023. DOI: `10.14778/3625054.3625060`.
+10. **D. G. Murray, J. Šimša, A. Klimovic, and I. Indyk**, *"tf.data: A Machine Learning Data Processing Framework,"* *Proceedings of the VLDB Endowment (PVLDB)*, vol. 14, no. 12, pp. 2945–2958, Aug. 2021. DOI: `10.14778/3476311.3476374`.

@@ -2,9 +2,22 @@
 **Cơ sở đào tạo:** Trường Đại học Sài Gòn – Khoa Công nghệ Thông tin  
 **Học phần:** Phương pháp nghiên cứu khoa học trong Công nghệ thông tin  
 **Đề tài:** Phân tích và Trực quan hóa bài báo khoa học: *"Delta Lake: High-Performance ACID Table Storage over Cloud Object Stores"*  
-**Sinh viên thực hiện:** Võ Huỳnh Minh Sang | **Lớp:** DCT123C4 | **MSSV:** 3123411256  
+**Lớp:** DCT123C4  
+**Nhóm sinh viên thực hiện:**
+- Võ Huỳnh Minh Sang — MSSV: `3123411256`
+- Nguyễn Đình Cường — MSSV: `3123411043`
+- Châu Quốc Bảo — MSSV: `3123411024`
+- Nguyễn Hoàng Long — MSSV: `3123411179`  
 **Giảng viên hướng dẫn:** Vũ Ngọc Thanh Sang  
 **Ngày thực hiện:** 2026-11-10  
+---
+
+# LỜI MỞ ĐẦU
+
+Trong bối cảnh dữ liệu lớn phát triển nhanh trên nền tảng điện toán đám mây, các hệ thống Hồ dữ liệu (*Data Lake*) sử dụng dịch vụ lưu trữ đối tượng (*Cloud Object Stores*) giúp giảm đáng kể chi phí lưu trữ nhưng lại thiếu tính toàn vẹn giao dịch **ACID**, dễ phát sinh dữ liệu lỗi và suy giảm hiệu năng truy vấn. Xuất phát từ bài toán thực tiễn này, nhóm lựa chọn phân tích bài báo *"Delta Lake: High-Performance ACID Table Storage over Cloud Object Stores"* (Armbrust và cộng sự, *PVLDB 2020*) vì đây là công trình tiên phong đặt nền móng cho kiến trúc **Data Lakehouse**, được công bố trên ấn phẩm học thuật uy tín hàng đầu thế giới (Scopus Q1, Web of Science, CORE A\*) và được ứng dụng rộng rãi trong công nghiệp.
+
+Bài báo trình bày thiết kế và đánh giá thực nghiệm của **Delta Lake** — một tầng lưu trữ bảng hỗ trợ giao dịch ACID hiệu năng cao vận hành trực tiếp trên các hệ thống lưu trữ đối tượng đám mây như Amazon S3 hay Azure Blob Storage. Trọng tâm của công trình là cơ chế nhật ký giao dịch phi máy chủ (`_delta_log`) lưu dưới dạng tệp JSON và Parquet kết hợp kiểm soát đồng thời lạc quan (*Optimistic Concurrency Control*), giúp đảm bảo tính nguyên tử, cô lập truy cập đồng thời và cho phép tích hợp nhiều tính năng cốt lõi như du hành thời gian (*Time Travel*), bỏ qua dữ liệu (*Data Skipping*), tối ưu bố cục Z-Order và xử lý thống nhất giữa dữ liệu theo lô (*Batch*) với dữ liệu luồng (*Streaming*).
+
 ---
 
 # PHẦN 1: THÔNG TIN VÀ NGUỒN BÀI BÁO (Item 1.1)

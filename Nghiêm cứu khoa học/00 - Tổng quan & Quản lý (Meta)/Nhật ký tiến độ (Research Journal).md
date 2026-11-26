@@ -56,3 +56,19 @@ Ghi chép nhanh các hoạt động nghiên cứu mỗi ngày.
   - **Hợp nhất bản thảo thành 01 file Markdown duy nhất:** Toàn bộ phần riêng (Mục 2.4 — FeathrPO, PVLDB 2023), phần chung (Chương 4 — Phản biện, Đánh đổi 4 tầng, Khoảng trống nghiên cứu & Hướng phát triển) và Tài liệu tham khảo IEEE được chuẩn hóa trong duy nhất file `04 - Viết bài & Xuất bản (Writing & Publication)/Bản thảo (Drafts)/Phan_TV4_Long_Feature_Store_va_Chuong4.md` (không làm slide riêng).
   - **Đối soát & chuẩn hóa văn phong:** Kiểm tra chéo toàn bộ số liệu (Table 1, Table 2, KLL sketches, BIP, kết quả tăng tốc `3,00×` / `2,50×`) với PDF gốc `Feature-Store-FeathrPO-VLDB2023.pdf`, bổ sung link Scopus/WoS/VLDB/ACM và diễn đạt bằng văn xuôi học thuật mạch lạc.
   - **Cập nhật 02 hình vẽ lại 300 DPI + Vector PDF:** Hiển thị độ chính xác 2 chữ số thập phân trên `Hinh_TV4_2_HieuNang_FeathrPO` (`1.96×`, `1.98×`, `2.02×`, `3.00×`, `2.50×`) và xuất bản vector `.pdf` cho cả 2 hình của TV4 (`Hinh_TV4_1_KienTruc_FeathrPO.pdf`, `Hinh_TV4_2_HieuNang_FeathrPO.pdf`).
+
+### 2026-11-26 (Cập nhật tổng kết — Hoàn thiện Bài 5, Tích hợp Nhóm & Báo cáo Cuối kỳ Final 35 trang)
+- **Đồng bộ kho lưu trữ GitHub & kiểm tra tiến độ nhóm:**
+  - Pull đầy đủ bài đóng góp của TV2 (Cường — *BtrBlocks*), TV3 (Bảo — *Photon*, commit `3357a96`) và TV4 (Long — *FeathrPO* & Chương 4).
+- **Hoàn thiện bổ sung cho Báo cáo Giữa kỳ (`Baocao.docx` / `Baocao.pdf` — 15 trang):**
+  - Cập nhật trang bìa đầy đủ 04 thành viên lớp `DCT123C4` (Võ Huỳnh Minh Sang, Nguyễn Đình Cường, Châu Quốc Bảo, Nguyễn Hoàng Long) và bổ sung Trang 2 **Lời mở đầu** ngắn gọn (lý do chọn bài báo & nội dung bài báo), đồng bộ số trang Mục lục và bản Markdown.
+- **Mở rộng Đề tài C lên 05 bài báo chuẩn PVLDB / ACM SIGMOD & cập nhật ngữ cảnh dự án:**
+  - Cập nhật `agent.md` và `Kế hoạch Cuối kỳ - Đề tài C (Nhóm 4 thành viên).md` lên kiến trúc 5 tầng (bổ sung Bài số 5 giao TV1 — Sang: *tf.data: A Machine Learning Data Processing Framework*, Google, PVLDB 2021, DOI `10.14778/3476311.3476374`).
+  - Hoàn thiện phần tích hợp còn thiếu của TV2 trong `Báo cáo Cá nhân - BtrBlocks (Nguyễn Đình Cường).md`: sửa liên kết PDF gốc, bổ sung cầu nối *BtrBlocks ↔ Delta Lake*, Ma trận so sánh đa chiều 05 công trình (Mục 3.2) và trích dẫn IEEE đầy đủ.
+- **Hoàn thành trọn bộ Bài báo số 5 (`tf.data` — PVLDB 2021):**
+  - Tải PDF gốc `tfdata-PVLDB2021.pdf`, viết bản thảo đầy đủ `Báo cáo Cá nhân - tf.data (Võ Huỳnh Minh Sang).md` và lập trình `scripts/ve_hinh_tfdata_bai5.py` tái tạo 02 hình 300 DPI + PDF vector (`TV1_Bai5_Hinh1_Autotune_Model`, `TV1_Bai5_Hinh2_MLPerf_Speedup`).
+- **Biên soạn & xuất bản Báo cáo Cuối kỳ Final (35 trang chuẩn in ấn SGU & OOXML):**
+  - Lập trình `scripts/ve_hinh_tich_hop_5tang.py` tạo 02 hình tích hợp cấp nhóm (`TV1_Hinh_KienTruc_TichHop_5Tang`, `Hinh_TongHop_HieuNang_5Tang`).
+  - Lập trình pipeline OOXML `scripts/build_baocao_cuoiky_5bai.py` xuất bộ báo cáo cuối kỳ hoàn chỉnh: `BaoCao_CuoiKy_DeTaiC_Nhom4.md`, `BaoCao_CuoiKy_DeTaiC_Nhom4.docx` và `BaoCao_CuoiKy_DeTaiC_Nhom4.pdf` (35 trang).
+  - Chuẩn hóa tên đề tài theo 5 thành phần khoa học, bỏ in đậm đầu ý, gỡ tên thành viên khỏi tiêu đề mục/sơ đồ (chỉ giữ trên trang bìa và Bảng phân công Mục 1.4), khung bìa đen phủ trọn khổ A4, toàn bộ tiêu đề chữ đen in đậm, đánh số trang đơn thuần căn giữa đáy trang, bảng không lặp tiêu đề khi sang trang, Mục lục tự động (`TOC \o "1-2"`), **Danh mục hình ảnh tự động phân cấp cây 3 tầng** (`TOC \f F \l "1-3"` + 25 trường `TC` + 39 bookmark/hyperlink nội bộ) và Phụ lục danh mục + bộ sưu tập 14 hình ảnh 300 DPI.
+
